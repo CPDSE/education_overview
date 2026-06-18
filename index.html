@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Studieforløbsoversigt – Bachelor i farmaci (SDU, fra efterår 2024). Viser data science-elementer på tværs af alle semestre.">
+<title>Bachelor Farmaci – Studieforløb (SDU, fra E2024)</title>
+<style>
+  :root {
+    --ds-h: 26px;
+    /* CPDSE palette */
+    --forest:  #3C5E3E;
+    --sage:    #5F7D61;
+    --mint:    #A9BBAA;
+    --gold:    #D6C17C;
+    --sand:    #E4D7A1;
+    --ivory:   #F6F1DC;
+    --charcoal:#333333;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    background: #fff;
+    color: var(--charcoal);
+    padding: 24px 28px 40px;
+  }
+
+  h1 {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 14px;
+    letter-spacing: 0.01em;
+    color: var(--forest);
+  }
+
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* 1 label col + 6 equal course cols */
+  .sem-row {
+    display: grid;
+    grid-template-columns: 72px repeat(6, 1fr);
+    gap: 3px;
+    align-items: stretch;
+  }
+
+  /* ── Semester bar ── */
+  .sem-label {
+    display: flex;
+    flex-direction: column;
+    font-size: 10px;
+    line-height: 1.3;
+    border: 1px solid var(--sage);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .sem-label-course {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4px 4px;
+    background: var(--forest);
+    border-bottom: 1px solid var(--sage);
+    gap: 2px;
+  }
+  .sem-label-course strong { font-size: 11px; display: block; color: #fff; }
+  .sem-label-course span   { font-size: 9px; color: var(--mint); }
+  .sem-tag {
+    font-size: 7.5px;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+  }
+  .sem-label-course .sem-tag { color: var(--gold); }
+
+  /* DS band on the label — exact same height as box-ds */
+  .sem-label-ds {
+    flex-shrink: 0;
+    height: var(--ds-h);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2px 4px;
+    background: var(--ivory);
+  }
+  .sem-label-ds .sem-tag { color: var(--forest); }
+
+  /* ── Course box ── */
+  .box {
+    border: 1px solid var(--mint);
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+  .box-main {
+    padding: 6px 7px 5px;
+    flex: 1;
+  }
+  .box-code       { font-size: 9.5px; color: var(--sage); margin-bottom: 1px; }
+  .box-title-da   { font-size: 10.5px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
+  .box-title-en   { font-size: 9px; font-style: italic; color: var(--sage); line-height: 1.3; margin-bottom: 4px; }
+  .box-meta       { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 3px; }
+
+  .tag            { font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 2px; line-height: 1.5; white-space: nowrap; }
+  .tag-ects       { background: var(--sand); color: var(--forest); border: 1px solid var(--gold); }
+  .tag-new        { background: var(--forest); color: #fff; border: 1px solid var(--forest); }
+
+  .box-link       { display: block; font-size: 8.5px; color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
+  .box-link:hover { color: var(--sage); }
+
+  /* DS band — fixed height matching --ds-h, always at bottom */
+  .box-ds {
+    flex-shrink: 0;
+    height: var(--ds-h);
+    border-top: 1.5px solid var(--gold);
+    background: var(--ivory);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .ds-toggle {
+    all: unset;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+    width: 100%; cursor: pointer;
+    padding: 0 7px;
+    height: var(--ds-h);
+    font-size: 8px; font-weight: bold; color: var(--forest); letter-spacing: 0.02em;
+  }
+  .ds-toggle:hover { background: var(--sand); }
+  .ds-chevron     { font-size: 8px; transition: transform .2s; display: inline-block; }
+  .ds-toggle[aria-expanded="true"] .ds-chevron { transform: rotate(180deg); }
+  /* When expanded, box-ds grows to show content */
+  .box-ds.expanded { height: auto; }
+  .ds-body        { display: none; padding: 4px 7px 6px; font-size: 8px; line-height: 1.5; color: var(--charcoal); border-top: 0.5px solid var(--sand); }
+  .ds-body.open   { display: block; }
+
+  .box-empty      { border: none; background: transparent; }
+
+  /* ── Print ── */
+  @media print {
+    :root { --ds-h: 22px; }
+    body  { padding: 8mm 8mm; font-size: 9px; }
+    h1    { font-size: 10px; margin-bottom: 8px; }
+    .grid { gap: 7px; }
+    .sem-row { grid-template-columns: 60px repeat(6, 1fr); gap: 2px; }
+    .box-code     { font-size: 7.5px; }
+    .box-title-da { font-size: 8.5px; }
+    .box-title-en { font-size: 7px; }
+    .tag          { font-size: 6.5px; padding: 0px 3px; }
+    .box-link     { font-size: 7px; }
+    .ds-toggle    { font-size: 6.5px; }
+    .box-main     { padding: 4px 5px 3px; }
+    .sem-label-course strong { font-size: 9px; }
+    .sem-label-course span   { font-size: 7.5px; }
+    .sem-tag      { font-size: 6.5px; }
+    /* Ensure backgrounds print */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Never break a semester row across pages */
+    .sem-row { break-inside: avoid; page-break-inside: avoid; }
+    /* Force page break after 3rd semester */
+    .sem-row:nth-child(3) { break-after: page; }
+    /* Hide expanded DS bodies in print */
+    .ds-body { display: none !important; }
+    .box-ds.expanded { height: var(--ds-h) !important; }
+  }
+
+  @page { size: A4 landscape; margin: 0; }
+
+  /* ── Screen-only: page chrome ── */
+  @media screen {
+    body { max-width: 1400px; margin: 0 auto; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0 16px;
+      border-bottom: 2px solid var(--gold);
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+    .page-header-left { display: flex; flex-direction: column; gap: 2px; }
+    .page-header-logo {
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--forest);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .page-header-sub {
+      font-size: 10px;
+      color: var(--sage);
+    }
+    .page-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--forest);
+      flex: 1;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+    .btn-print {
+      all: unset;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      background: var(--ivory);
+      color: var(--forest);
+      font-size: 10px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .btn-print:hover { background: var(--sand); }
+
+    .page-footer {
+      margin-top: 28px;
+      padding-top: 12px;
+      border-top: 1px solid var(--mint);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: var(--sage);
+    }
+    .page-footer a { color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
+    .page-footer a:hover { color: var(--sage); }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 9px;
+      color: var(--charcoal);
+    }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-swatch {
+      width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0;
+    }
+  }
+
+  @media print {
+    .page-header, .page-footer, .legend, .btn-print { display: none !important; }
+    h1 { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-header-left">
+    <div class="page-header-logo">CPDSE</div>
+    <div class="page-header-sub">Center for Pharmaceutical Data Science Education</div>
+  </div>
+  <div class="page-title">Bachelor Farmaci – Studieforløb (SDU, fra efterår 2024)</div>
+  <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--forest)"></div> Semester (kursus)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--ivory);border:1px solid var(--gold)"></div> DS-elementer</div>
+  <div class="legend-item"><span class="tag tag-new" style="font-size:8px">Nyt 2024</span> Ny kursusversion</div>
+  <div class="legend-item"><span class="tag tag-ects" style="font-size:8px">ECTS</span> Kursusomfang</div>
+</div>
+
+<h1 style="display:none">Bachelor Farmaci – Studieforløb (SDU, fra efterår 2024)</h1>
+
+<div class="grid">
+
+  <!-- ══ 1. SEMESTER ══ -->
+  <div class="sem-row">
+    <div class="sem-label">
+      <div class="sem-label-course"><div class="sem-tag">Kursus</div><strong>1. sem</strong><span>(E24)</span></div>
+      <div class="sem-label-ds"><div class="sem-tag">DS-elem.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA501</div>
+        <div class="box-title-da">Farmaci grundkursus</div>
+        <div class="box-title-en">Introduction to Pharmacy</div>
+        <div class="box-meta"><span class="tag tag-ects">10 ECTS</span><span class="tag tag-new">Nyt 2024</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Grundlæggende dataregistrering og statistiske begreber i farmaceutisk laboratoriekontext. Fundament for kvantitativ analyse.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">MM556</div>
+        <div class="box-title-da">Matematik og statistik</div>
+        <div class="box-title-en">Mathematics and Statistics</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Deskriptiv statistik, hypotesetest og lineær regression. Kernen i kursets DS-relevans.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">KE557</div>
+        <div class="box-title-da">Almen kemi</div>
+        <div class="box-title-en">General Chemistry</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Beregningsværktøjer til kemiske ligevægte. Grundlag for kemoinformatik og automatiserede datapipelines.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">KE558</div>
+        <div class="box-title-da">Indledende organisk kemi</div>
+        <div class="box-title-en">Introductory Organic Chemistry</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">SMILES-notation og digitale molekylstrukturer. Baggrund for ML på molekylære egenskaber.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">KE521</div>
+        <div class="box-title-da">Grundstoffernes kemi</div>
+        <div class="box-title-en">Chemistry of the Elements</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Periodiske egenskabers datastrukturer og kemiske databaser.</div></div>
+    </div>
+    <div class="box-empty"></div>
+  </div>
+
+  <!-- ══ 2. SEMESTER ══ -->
+  <div class="sem-row">
+    <div class="sem-label">
+      <div class="sem-label-course"><div class="sem-tag">Kursus</div><strong>2. sem</strong><span>(F25)</span></div>
+      <div class="sem-label-ds"><div class="sem-tag">DS-elem.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FF501</div>
+        <div class="box-title-da">Førsteårsprojekt</div>
+        <div class="box-title-en">First-Year Project</div>
+        <div class="box-meta"><span class="tag tag-ects">10 ECTS</span><span class="tag tag-new">Nyt 2024</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Dataindsamling, analyse og præsentation. Statistiske metoder til en selvvalgt farmaceutisk problemstilling.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">BMB528</div>
+        <div class="box-title-da">Farmaceutisk mikrobiologi</div>
+        <div class="box-title-en">Pharmaceutical Microbiology</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Vækstkinetikmodeller og statistisk kvalitetskontrol. Introduktion til automatiseret kolonitælling og billedanalyse.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FY528</div>
+        <div class="box-title-da">Fysik for biologi og farmaci</div>
+        <div class="box-title-en">Physics for Biology and Pharmacy</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Modellering med differentialligninger og numeriske metoder. Grundlag for simulering i computationel farmaci.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA508</div>
+        <div class="box-title-da">Farmaceutisk biologi</div>
+        <div class="box-title-en">Pharmaceutical Biology</div>
+        <div class="box-meta"><span class="tag tag-ects">10 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Biologiske databaser (GenBank, UniProt) og grundlæggende bioinformatik. Sekvensanalyse og fylogenetiske træer.</div></div>
+    </div>
+    <div class="box-empty"></div>
+    <div class="box-empty"></div>
+  </div>
+
+  <!-- ══ 3. SEMESTER ══ -->
+  <div class="sem-row">
+    <div class="sem-label">
+      <div class="sem-label-course"><div class="sem-tag">Kursus</div><strong>3. sem</strong><span>(E25)</span></div>
+      <div class="sem-label-ds"><div class="sem-tag">DS-elem.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">SU520</div>
+        <div class="box-title-da">Fysiologi og farmakologi A</div>
+        <div class="box-title-en">Physiology and Pharmacology A</div>
+        <div class="box-meta"><span class="tag tag-ects">7,5 ECTS</span><span class="tag tag-new">Nyt 2024</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">PK/PD-modeller og dosis-respons-kurver. Grundlag for populationsbaseret modellering med NONMEM/R.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA511</div>
+        <div class="box-title-da">Lægemiddelformulering A</div>
+        <div class="box-title-en">Drug Formulation A</div>
+        <div class="box-meta"><span class="tag tag-ects">7,5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Design of Experiments og SPC. Variansanalyse og regressionsmodeller til formuleringsoptimering.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA515</div>
+        <div class="box-title-da">Farmaceutisk fysisk kemi</div>
+        <div class="box-title-en">Pharmaceutical Physical Chemistry</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Spektroskopiske data behandles med kurvenpassning og PCA. Grundlag for kemometriske metoder.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">BMB530</div>
+        <div class="box-title-da">Grundlæggende biokemi</div>
+        <div class="box-title-en">Fundamental Biochemistry</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Enzymkinetik og ikke-lineær regression. PDB-strukturdata som eksempel på biologisk datastoring.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">BMB504</div>
+        <div class="box-title-da">Fundamental molekylær biologi</div>
+        <div class="box-title-en">Fundamental Molecular Biology</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Sekvensdata og bioinformatiske analyseværktøjer. qPCR som eksempel på kvantitativ biologisk databehandling.</div></div>
+    </div>
+    <div class="box-empty"></div>
+  </div>
+
+  <!-- ══ 4. SEMESTER ══ -->
+  <div class="sem-row">
+    <div class="sem-label">
+      <div class="sem-label-course"><div class="sem-tag">Kursus</div><strong>4. sem</strong><span>(F26)</span></div>
+      <div class="sem-label-ds"><div class="sem-tag">DS-elem.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">SU517</div>
+        <div class="box-title-da">Fysiologi og farmakologi B</div>
+        <div class="box-title-en">Physiology and Pharmacology B</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Kliniske datasæt og biomarkøranalyse. Fortolkning af prøveresultater med statistiske referenceintervaller.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA503</div>
+        <div class="box-title-da">Lægemiddelformulering B</div>
+        <div class="box-title-en">Drug Formulation B</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span><span class="tag tag-new">Nyt 2024</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Responsoverfladeanalyse (RSM) og multivariat optimering. Prædiktiv modellering af formuleringsparametre.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA507</div>
+        <div class="box-title-da">Farmaceutisk instrumentel analyse</div>
+        <div class="box-title-en">Pharmaceutical Instrumental Analysis</div>
+        <div class="box-meta"><span class="tag tag-ects">10 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Kemometrisk behandling af spektroskopi- og kromatografidata. PCA, PLS og kalibreringskurver – stærkt DS-relevant.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">—</div>
+        <div class="box-title-da">Organisk kemi</div>
+        <div class="box-title-en">Organic Chemistry</div>
+        <div class="box-meta"><span class="tag tag-ects">10 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">SMILES/SMARTS og kemoinformatik. Grundlag for ML-baseret forudsigelse af reaktionsudfald.</div></div>
+    </div>
+    <div class="box-empty"></div>
+    <div class="box-empty"></div>
+  </div>
+
+  <!-- ══ 5. SEMESTER ══ -->
+  <div class="sem-row">
+    <div class="sem-label">
+      <div class="sem-label-course"><div class="sem-tag">Kursus</div><strong>5. sem</strong><span>(E26)</span></div>
+      <div class="sem-label-ds"><div class="sem-tag">DS-elem.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">SU518</div>
+        <div class="box-title-da">Fysiologi og farmakologi C</div>
+        <div class="box-title-en">Physiology and Pharmacology C</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Avanceret PK og kroniske sygdomsmodeller. Populationsdata analyseres i PK/PD-software.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA504</div>
+        <div class="box-title-da">Lægemiddelformulering C</div>
+        <div class="box-title-en">Drug Formulation C</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span><span class="tag tag-new">Nyt 2024</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">ML og prædiktive modeller til formuleringsoptimering. PAT og digitale tvillinger af produktionsprocesser.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA505</div>
+        <div class="box-title-da">Naturstofkemi</div>
+        <div class="box-title-en">Natural Product Chemistry</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Naturstof-databaser og metabolomik. MS-data med kemometrisk klassifikation til identifikation af bioaktive stoffer.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">BB555</div>
+        <div class="box-title-da">Toksikologi</div>
+        <div class="box-title-en">Toxicology</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">QSAR-modellering og in silico toksicitetsprediktion via ML på molekylære deskriptorer.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">SU511</div>
+        <div class="box-title-da">Samfundsfarmaci</div>
+        <div class="box-title-en">Social and Community Pharmacy</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Registerdata og epidemiologiske metoder. Receptdata og sundhedsøkonomisk modellering.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">—</div>
+        <div class="box-title-da">Konstituerende valgfag</div>
+        <div class="box-title-en">Compulsory Elective</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Valgfagskatalog</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Afhænger af valg. DS-relevante muligheder: bioinformatik, kemoinformatik, sundhedsinformatik.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ 6. SEMESTER ══ -->
+  <div class="sem-row">
+    <div class="sem-label">
+      <div class="sem-label-course"><div class="sem-tag">Kursus</div><strong>6. sem</strong><span>(F27)</span></div>
+      <div class="sem-label-ds"><div class="sem-tag">DS-elem.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">SU519</div>
+        <div class="box-title-da">Fysiologi og farmakologi D</div>
+        <div class="box-title-en">Physiology and Pharmacology D</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Bioækvivalensstudier og kliniske forsøg (ANOVA, survival-analyse). Grundlag for Real World Evidence.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA514</div>
+        <div class="box-title-da">Lægemiddelformulering D</div>
+        <div class="box-title-en">Drug Formulation D</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span><span class="tag tag-new">Nyt 2024</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Realtidsdataovervågning (PAT) og SPC-charts. Multivariatstatistik til processtabilitet og fejldetektering.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">FA506</div>
+        <div class="box-title-da">Medicinalkemi</div>
+        <div class="box-title-en">Medicinal Chemistry</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">QSAR/QSPR og AI-assisteret lægemiddeldesign. Molecular docking, Lipinski-filtrering og generative modeller.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">—</div>
+        <div class="box-title-da">Valgfag</div>
+        <div class="box-title-en">Elective Course</div>
+        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Valgfagskatalog</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">DS-relevante muligheder: ML i life sciences, registerdata og sundhedsøkonomi, kemometri.</div></div>
+    </div>
+    <div class="box">
+      <div class="box-main">
+        <div class="box-code">—</div>
+        <div class="box-title-da">Bachelorprojekt</div>
+        <div class="box-title-en">Bachelor's Thesis</div>
+        <div class="box-meta"><span class="tag tag-ects">10 ECTS</span></div>
+        <a class="box-link" href="https://odin.sdu.dk/#" target="_blank">&#8599; Kursusside (SDU)</a>
+      </div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS-elementer <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Selvstændigt anvendt DS afhænger af projektemne. ML, statistisk analyse eller kemometri kan integreres som metodisk ramme.</div></div>
+    </div>
+    <div class="box-empty"></div>
+  </div>
+
+</div><!-- /grid -->
+
+<footer class="page-footer">
+  <span>Studieforløb gældende fra efterår 2024 · Syddansk Universitet</span>
+  <span>
+    <a href="https://www.cpdse.dk" target="_blank">cpdse.dk</a>
+    &nbsp;·&nbsp;
+    <a href="https://odin.sdu.dk" target="_blank">SDU kursusdatabase</a>
+  </span>
+</footer>
+
+<script>
+  function toggleDS(btn) {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    const ds = btn.closest('.box-ds');
+    ds.classList.toggle('expanded', !expanded);
+    btn.setAttribute('aria-expanded', String(!expanded));
+    btn.nextElementSibling.classList.toggle('open', !expanded);
+  }
+</script>
+</body>
+</html>
