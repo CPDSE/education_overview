@@ -1,3 +1,5 @@
+[https://cpdse.github.io/education_overview/](https://cpdse.github.io/education_overview/)
+
 # SDU Pharmacy Programme — Course Overview
 
 Interactive course overview for the Bachelor of Pharmacy programme at the University of Southern Denmark (SDU), showing the study path from autumn 2024 with integrated data science elements across all semesters.
