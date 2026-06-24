@@ -7,7 +7,7 @@
 <title>Bachelor of Pharmacy – Course Overview (SDU, last updated 24 June 2026)</title>
 <style>
   :root {
-    --ds-h: 34px;
+    --ds-h: 40px;
     /* CPDSE palette */
     --forest:  #3C5E3E;
     --sage:    #5F7D61;
@@ -95,8 +95,8 @@
   .box-cat-bar {
     background: #fff;
     border-bottom: 1px solid var(--mint);
-    padding: 5px 7px;
-    font-size: 13px;
+    padding: 6px 8px;
+    font-size: 16px;
     font-weight: bold;
     color: var(--charcoal);
   }
@@ -111,15 +111,15 @@
     padding: 6px 7px 5px;
     flex: 1;
   }
-  .box-title-da   { font-size: 14px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
-  .box-title-en   { font-size: 12px; font-style: italic; color: var(--sage); line-height: 1.3; margin-bottom: 4px; }
+  .box-title-da   { font-size: 17px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
+  .box-title-en   { font-size: 15px; font-style: italic; color: var(--sage); line-height: 1.3; margin-bottom: 4px; }
   .box-meta       { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 3px; }
 
-  .tag            { font-size: 10.5px; font-weight: bold; padding: 1px 4px; border-radius: 2px; line-height: 1.5; white-space: nowrap; }
+  .tag            { font-size: 13px; font-weight: bold; padding: 1px 4px; border-radius: 2px; line-height: 1.5; white-space: nowrap; }
   .tag-ects       { background: var(--sand); color: var(--forest); border: 1px solid var(--gold); }
   .tag-new        { background: var(--forest); color: #fff; border: 1px solid var(--forest); }
 
-  .box-link       { display: block; font-size: 11px; color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
+  .box-link       { display: block; font-size: 14px; color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
   .box-link:hover { color: var(--sage); }
 
   /* DS band — fixed height matching --ds-h, always at bottom */
@@ -139,14 +139,14 @@
     width: 100%; cursor: pointer;
     padding: 0 7px;
     height: var(--ds-h);
-    font-size: 10.5px; font-weight: bold; color: var(--forest); letter-spacing: 0.02em;
+    font-size: 13px; font-weight: bold; color: var(--forest); letter-spacing: 0.02em;
   }
   .ds-toggle:hover { background: var(--sand); }
-  .ds-chevron     { font-size: 10.5px; transition: transform .2s; display: inline-block; }
+  .ds-chevron     { font-size: 13px; transition: transform .2s; display: inline-block; }
   .ds-toggle[aria-expanded="true"] .ds-chevron { transform: rotate(180deg); }
   /* When expanded, box-ds grows to show content */
   .box-ds.expanded { height: auto; }
-  .ds-body        { display: none; padding: 4px 7px 6px; font-size: 10.5px; line-height: 1.5; color: var(--charcoal); border-top: 0.5px solid var(--sand); }
+  .ds-body        { display: none; padding: 6px 8px 8px; font-size: 14px; line-height: 1.5; color: var(--charcoal); border-top: 0.5px solid var(--sand); }
   .ds-body.open   { display: block; }
 
   .box-empty      { border: none; background: transparent; }
