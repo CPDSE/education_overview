@@ -12,7 +12,7 @@ import openpyxl
 XLSX_PATH = Path(__file__).parent / "Pharma_DS_Course_Overview.xlsx"
 HTML_PATH = Path(__file__).parent / "index.html"
 SHEET_NAME = "SDU"
-COLS_PER_ROW = 6
+COLS_PER_ROW = 5
 HEADLINE_PATTERN = re.compile(
     r"Bachelor of Pharmacy – Course Overview \(SDU, [^)]*\)"
 )

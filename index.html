@@ -41,12 +41,13 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    width: 100%;
   }
 
-  /* 1 label col + 6 equal course cols */
+  /* 1 label col + 5 equal course cols */
   .sem-row {
     display: grid;
-    grid-template-columns: 72px repeat(6, 1fr);
+    grid-template-columns: 72px repeat(5, 1fr);
     gap: 3px;
     align-items: stretch;
   }
@@ -155,9 +156,10 @@
   @media print {
     :root { --ds-h: 22px; }
     body  { padding: 8mm 8mm; font-size: 9px; }
+    .box-empty { border: none; }
     h1    { font-size: 10px; margin-bottom: 8px; }
     .grid { gap: 7px; }
-    .sem-row { grid-template-columns: 60px repeat(6, 1fr); gap: 2px; }
+    .sem-row { grid-template-columns: 60px repeat(5, 1fr); gap: 2px; }
     .box-cat-bar  { font-size: 9px; padding: 3px 5px; }
     .box-title-da { font-size: 8.5px; }
     .box-title-en { font-size: 7px; }
@@ -401,7 +403,6 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Math and statistics foundations, Intro to coding in R</div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
@@ -448,7 +449,6 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
     <div class="box-empty"></div>
   </div>
 
@@ -506,7 +506,6 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
@@ -553,7 +552,6 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
     <div class="box-empty"></div>
   </div>
 
@@ -611,7 +609,6 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
@@ -658,7 +655,6 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
     <div class="box-empty"></div>
   </div>
 
