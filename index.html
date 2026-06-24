@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Course overview – Bachelor of Pharmacy (SDU, from autumn 2024). Shows data science elements across all semesters.">
-<title>Bachelor of Pharmacy – Course Overview (SDU, from F2024)</title>
+<title>Bachelor of Pharmacy – Course Overview (SDU, last updated 24 June 2026)</title>
 <style>
   :root {
-    --ds-h: 26px;
+    --ds-h: 34px;
     /* CPDSE palette */
     --forest:  #3C5E3E;
     --sage:    #5F7D61;
@@ -22,14 +22,14 @@
 
   body {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 16px;
     background: #fff;
     color: var(--charcoal);
     padding: 24px 28px 40px;
   }
 
   h1 {
-    font-size: 13px;
+    font-size: 17px;
     font-weight: bold;
     text-align: center;
     margin-bottom: 14px;
@@ -55,7 +55,7 @@
   .sem-label {
     display: flex;
     flex-direction: column;
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.3;
     border: 1px solid var(--sage);
     border-radius: 3px;
@@ -70,33 +70,18 @@
     text-align: center;
     padding: 4px 4px;
     background: var(--forest);
-    border-bottom: 1px solid var(--sage);
     gap: 2px;
   }
-  .sem-label-course strong { font-size: 11px; display: block; color: #fff; }
-  .sem-label-course span   { font-size: 9px; color: var(--mint); }
+  .sem-label-course strong { font-size: 34px; display: block; color: #fff; line-height: 1; }
+  .sem-label-course span   { font-size: 12px; color: var(--mint); }
   .sem-tag {
-    font-size: 7.5px;
+    font-size: 10px;
     font-weight: bold;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     margin-bottom: 1px;
   }
   .sem-label-course .sem-tag { color: var(--gold); }
-
-  /* DS band on the label — exact same height as box-ds */
-  .sem-label-ds {
-    flex-shrink: 0;
-    height: var(--ds-h);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2px 4px;
-    background: var(--ivory);
-  }
-  .sem-label-ds .sem-tag { color: var(--forest); }
 
   /* ── Course box ── */
   .box {
@@ -109,16 +94,16 @@
     padding: 6px 7px 5px;
     flex: 1;
   }
-  .box-code       { font-size: 9.5px; color: var(--sage); margin-bottom: 1px; }
-  .box-title-da   { font-size: 10.5px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
-  .box-title-en   { font-size: 9px; font-style: italic; color: var(--sage); line-height: 1.3; margin-bottom: 4px; }
+  .box-code       { font-size: 12.5px; color: var(--sage); margin-bottom: 1px; }
+  .box-title-da   { font-size: 14px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
+  .box-title-en   { font-size: 12px; font-style: italic; color: var(--sage); line-height: 1.3; margin-bottom: 4px; }
   .box-meta       { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 3px; }
 
-  .tag            { font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 2px; line-height: 1.5; white-space: nowrap; }
+  .tag            { font-size: 10.5px; font-weight: bold; padding: 1px 4px; border-radius: 2px; line-height: 1.5; white-space: nowrap; }
   .tag-ects       { background: var(--sand); color: var(--forest); border: 1px solid var(--gold); }
   .tag-new        { background: var(--forest); color: #fff; border: 1px solid var(--forest); }
 
-  .box-link       { display: block; font-size: 8.5px; color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
+  .box-link       { display: block; font-size: 11px; color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
   .box-link:hover { color: var(--sage); }
 
   /* DS band — fixed height matching --ds-h, always at bottom */
@@ -138,14 +123,14 @@
     width: 100%; cursor: pointer;
     padding: 0 7px;
     height: var(--ds-h);
-    font-size: 8px; font-weight: bold; color: var(--forest); letter-spacing: 0.02em;
+    font-size: 10.5px; font-weight: bold; color: var(--forest); letter-spacing: 0.02em;
   }
   .ds-toggle:hover { background: var(--sand); }
-  .ds-chevron     { font-size: 8px; transition: transform .2s; display: inline-block; }
+  .ds-chevron     { font-size: 10.5px; transition: transform .2s; display: inline-block; }
   .ds-toggle[aria-expanded="true"] .ds-chevron { transform: rotate(180deg); }
   /* When expanded, box-ds grows to show content */
   .box-ds.expanded { height: auto; }
-  .ds-body        { display: none; padding: 4px 7px 6px; font-size: 8px; line-height: 1.5; color: var(--charcoal); border-top: 0.5px solid var(--sand); }
+  .ds-body        { display: none; padding: 4px 7px 6px; font-size: 10.5px; line-height: 1.5; color: var(--charcoal); border-top: 0.5px solid var(--sand); }
   .ds-body.open   { display: block; }
 
   .box-empty      { border: none; background: transparent; }
@@ -164,7 +149,7 @@
     .box-link     { font-size: 7px; }
     .ds-toggle    { font-size: 6.5px; }
     .box-main     { padding: 4px 5px 3px; }
-    .sem-label-course strong { font-size: 9px; }
+    .sem-label-course strong { font-size: 20px; }
     .sem-label-course span   { font-size: 7.5px; }
     .sem-tag      { font-size: 6.5px; }
     /* Ensure backgrounds print */
@@ -195,18 +180,18 @@
     }
     .page-header-left { display: flex; flex-direction: column; gap: 2px; }
     .page-header-logo {
-      font-size: 11px;
+      font-size: 14px;
       font-weight: bold;
       color: var(--forest);
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
     .page-header-sub {
-      font-size: 10px;
+      font-size: 13px;
       color: var(--sage);
     }
     .page-title {
-      font-size: 15px;
+      font-size: 20px;
       font-weight: bold;
       color: var(--forest);
       flex: 1;
@@ -219,12 +204,12 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border: 1px solid var(--gold);
       border-radius: 3px;
       background: var(--ivory);
       color: var(--forest);
-      font-size: 10px;
+      font-size: 13px;
       font-weight: bold;
       white-space: nowrap;
     }
@@ -237,7 +222,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 9px;
+      font-size: 12px;
       color: var(--sage);
     }
     .page-footer a { color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
@@ -250,12 +235,12 @@
       align-items: center;
       flex-wrap: wrap;
       margin-bottom: 10px;
-      font-size: 9px;
+      font-size: 12px;
       color: var(--charcoal);
     }
     .legend-item { display: flex; align-items: center; gap: 4px; }
     .legend-swatch {
-      width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0;
+      width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0;
     }
   }
 
@@ -272,7 +257,7 @@
     <div class="page-header-logo">CPDSE</div>
     <div class="page-header-sub">Center for Pharmaceutical Data Science Education</div>
   </div>
-  <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, from autumn 2024)</div>
+  <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, last updated 24 June 2026)</div>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
 </header>
 
@@ -283,14 +268,13 @@
   <div class="legend-item"><span class="tag tag-ects" style="font-size:8px">ECTS</span> Course size</div>
 </div>
 
-<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, from autumn 2024)</h1>
+<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 24 June 2026)</h1>
 
 <div class="grid">
 
   <div class="sem-row">
     <div class="sem-label">
-      <div class="sem-label-course"><div class="sem-tag">Sem.</div><strong>Sem. 1</strong><span>(E24)</span></div>
-      <div class="sem-label-ds"><div class="sem-tag">DS elem.</div></div>
+      <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>1</strong><span>(Efterår)</span></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -300,7 +284,7 @@
         <div class="box-meta"><span class="tag tag-ects">10 ECTS</span><span class="tag tag-new">DS v2.1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa501&amp;lang=da" target="_blank">&#8599; Course page (SDU)</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Intro to coding in R, Data analysis in R, Data visualization in R</div></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -340,15 +324,14 @@
         <div class="box-meta"><span class="tag tag-ects">5 ECTS</span><span class="tag tag-new">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=mm556&amp;lang=da" target="_blank">&#8599; Course page (SDU)</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Math and statistics foundations, Intro to coding in R</div></div>
     </div>
     <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
-      <div class="sem-label-course"><div class="sem-tag">Sem.</div><strong>Sem. 2</strong><span>(F25)</span></div>
-      <div class="sem-label-ds"><div class="sem-tag">DS elem.</div></div>
+      <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>2</strong><span>(Forår)</span></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -368,7 +351,7 @@
         <div class="box-meta"><span class="tag tag-ects">5 ECTS</span><span class="tag tag-new">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fy528&amp;lang=da" target="_blank">&#8599; Course page (SDU)</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Data analysis in R</div></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -396,8 +379,7 @@
 
   <div class="sem-row">
     <div class="sem-label">
-      <div class="sem-label-course"><div class="sem-tag">Sem.</div><strong>Sem. 3</strong><span>(E25)</span></div>
-      <div class="sem-label-ds"><div class="sem-tag">DS elem.</div></div>
+      <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>3</strong><span>(Efterår)</span></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -417,7 +399,7 @@
         <div class="box-meta"><span class="tag tag-ects">7,5 ECTS</span><span class="tag tag-new">DS v2</span></div>
         <a class="box-link" href="http://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa511&amp;lang=da" target="_blank">&#8599; Course page (SDU)</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Data analysis in R, Data visualization in R, Report writing in R</div></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -454,8 +436,7 @@
 
   <div class="sem-row">
     <div class="sem-label">
-      <div class="sem-label-course"><div class="sem-tag">Sem.</div><strong>Sem. 4</strong><span>(F26)</span></div>
-      <div class="sem-label-ds"><div class="sem-tag">DS elem.</div></div>
+      <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>4</strong><span>(Forår)</span></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -475,7 +456,7 @@
         <div class="box-meta"><span class="tag tag-ects">5 ECTS</span><span class="tag tag-new">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa503&amp;lang=da" target="_blank">&#8599; Course page (SDU)</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Data analysis in R, Data visualization in R, Report writing in R</div></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -485,7 +466,7 @@
         <div class="box-meta"><span class="tag tag-ects">10 ECTS</span><span class="tag tag-new">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa507&amp;lang=da" target="_blank">&#8599; Course page (SDU)</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">Statistical analysis (hypothesis testing, linear regression analysis)</div></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -503,8 +484,7 @@
 
   <div class="sem-row">
     <div class="sem-label">
-      <div class="sem-label-course"><div class="sem-tag">Sem.</div><strong>Sem. 5</strong><span>(E26)</span></div>
-      <div class="sem-label-ds"><div class="sem-tag">DS elem.</div></div>
+      <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>5</strong><span>(Efterår)</span></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -556,22 +536,12 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
     </div>
-    <div class="box">
-      <div class="box-main">
-        <div class="box-code">—</div>
-        <div class="box-title-da">Konstituerende valgfag</div>
-        <div class="box-title-en">Compulsory Elective</div>
-        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
-        <a class="box-link" href="https://odin.sdu.dk/" target="_blank">&#8599; Elective catalogue</a>
-      </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
-    </div>
+    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
-      <div class="sem-label-course"><div class="sem-tag">Sem.</div><strong>Sem. 6</strong><span>(F27)</span></div>
-      <div class="sem-label-ds"><div class="sem-tag">DS elem.</div></div>
+      <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>6</strong><span>(Forår)</span></div>
     </div>
     <div class="box">
       <div class="box-main">
@@ -613,23 +583,14 @@
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
     </div>
-    <div class="box">
-      <div class="box-main">
-        <div class="box-code">—</div>
-        <div class="box-title-da">Valgfag</div>
-        <div class="box-title-en">Elective Course</div>
-        <div class="box-meta"><span class="tag tag-ects">5 ECTS</span></div>
-        <a class="box-link" href="https://odin.sdu.dk/" target="_blank">&#8599; Elective catalogue</a>
-      </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body"></div></div>
-    </div>
+    <div class="box-empty"></div>
     <div class="box-empty"></div>
   </div>
 
 </div><!-- /grid -->
 
 <footer class="page-footer">
-  <span>Study programme effective from autumn 2024 · University of Southern Denmark</span>
+  <span>Last updated 24 June 2026 · University of Southern Denmark</span>
   <span>
     <a href="https://www.cpdse.dk" target="_blank">cpdse.dk</a>
     &nbsp;·&nbsp;

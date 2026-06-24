@@ -3,6 +3,8 @@
 Usage: python build.py
 """
 import html
+import re
+from datetime import date
 from pathlib import Path
 
 import openpyxl
@@ -11,8 +13,12 @@ XLSX_PATH = Path(__file__).parent / "Pharma_DS_Course_Overview.xlsx"
 HTML_PATH = Path(__file__).parent / "index.html"
 SHEET_NAME = "SDU"
 COLS_PER_ROW = 6
-
-SEMESTER_TAGS = {1: "E24", 2: "F25", 3: "E25", 4: "F26", 5: "E26", 6: "F27"}
+HEADLINE_PATTERN = re.compile(
+    r"Bachelor of Pharmacy – Course Overview \(SDU, [^)]*\)"
+)
+FOOTER_PATTERN = re.compile(
+    r"Last updated [^·]*· University of Southern Denmark"
+)
 
 
 def fmt_ects(value):
@@ -88,15 +94,14 @@ def render_box(course):
 
 
 def render_semester(sem_num, courses):
-    tag = SEMESTER_TAGS.get(sem_num, "")
+    season = "Efterår" if sem_num % 2 == 1 else "Forår"
     boxes = [render_box(c) for c in courses]
     while len(boxes) < COLS_PER_ROW:
         boxes.append('    <div class="box-empty"></div>')
 
     return f"""  <div class="sem-row">
     <div class="sem-label">
-      <div class="sem-label-course"><div class="sem-tag">Sem.</div><strong>Sem. {sem_num}</strong><span>({tag})</span></div>
-      <div class="sem-label-ds"><div class="sem-tag">DS elem.</div></div>
+      <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>{sem_num}</strong><span>({season})</span></div>
     </div>
 {chr(10).join(boxes)}
   </div>"""
@@ -112,6 +117,15 @@ def main():
     grid_html = render_grid(by_semester)
 
     text = HTML_PATH.read_text(encoding="utf-8")
+
+    today = date.today()
+    last_updated = f"{today.day} {today.strftime('%B %Y')}"
+    headline = f"Bachelor of Pharmacy – Course Overview (SDU, last updated {last_updated})"
+    text = HEADLINE_PATTERN.sub(headline, text)
+
+    footer_text = f"Last updated {last_updated} · University of Southern Denmark"
+    text = FOOTER_PATTERN.sub(footer_text, text)
+
     start_marker = '<div class="grid">'
     end_marker = '</div><!-- /grid -->'
     start = text.index(start_marker) + len(start_marker)
