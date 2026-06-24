@@ -20,6 +20,15 @@ FOOTER_PATTERN = re.compile(
     r"Last updated [^·]*· University of Southern Denmark"
 )
 
+CATEGORY_SLUGS = {
+    "Quantitative & Analytical Methods": "cat-quant",
+    "Chemistry": "cat-chem",
+    "Biology & Biochemistry": "cat-bio",
+    "Physiology & Pharmacology": "cat-physio",
+    "Formulation & Manufacturing": "cat-form",
+    "Pharmacy Practice & Society": "cat-practice",
+}
+
 
 def fmt_ects(value):
     if value is None:
@@ -37,6 +46,23 @@ def fmt_ds_version(value):
     if float(value) == int(value):
         return f"DS v{int(value)}"
     return f"DS v{value}"
+
+
+def fmt_ds_tooltip(value):
+    if value is None or value == "":
+        return ""
+    if isinstance(value, str):
+        return "DS upgrade version not yet determined."
+    version = float(value)
+    if version == 1:
+        return "No DS upgrade."
+    if version == 2:
+        return "Initial DS upgrade."
+    if version == 3:
+        return "Final version."
+    if version > 2:
+        return "Iterative refinement of the DS upgrade."
+    return "DS upgrade version."
 
 
 def load_courses():
@@ -58,6 +84,7 @@ def load_courses():
             "ects": row[idx["ECTS"]],
             "semester": int(semester),
             "webpage": row[idx["Course Webpage"]] or "#",
+            "category": str(row[idx["Course Category 1"]] or "").strip(),
             "ds_version": row[idx["DS Version"]],
             "ds_desc": row[idx["DS Elements"]] or "",
         })
@@ -79,14 +106,21 @@ def render_box(course):
     link_label = "Elective catalogue" if course["code"] == "—" else "Course page (SDU)"
 
     version_label = fmt_ds_version(course["ds_version"])
-    version_tag = f'<span class="tag tag-new">{html.escape(version_label)}</span>' if version_label else ""
+    version_tooltip = html.escape(fmt_ds_tooltip(course["ds_version"]), quote=True)
+    version_tag = (
+        f'<span class="tag tag-new" title="{version_tooltip}">{html.escape(version_label)}</span>'
+        if version_label else ""
+    )
 
-    return f"""    <div class="box">
+    cat_slug = CATEGORY_SLUGS.get(course["category"], "")
+    box_class = f"box {cat_slug}" if cat_slug else "box"
+
+    return f"""    <div class="{box_class}">
       <div class="box-main">
         <div class="box-code">{code}</div>
         <div class="box-title-da">{title_da}</div>
         <div class="box-title-en">{title_en}</div>
-        <div class="box-meta"><span class="tag tag-ects">{ects}</span>{version_tag}</div>
+        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span>{version_tag}</div>
         <a class="box-link" href="{webpage}" target="_blank">&#8599; {link_label}</a>
       </div>
       <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements <span class="ds-chevron">&#9660;</span></button><div class="ds-body">{ds_desc}</div></div>
