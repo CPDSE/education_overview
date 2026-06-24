@@ -114,10 +114,11 @@ def render_box(course):
 
     cat_slug = CATEGORY_SLUGS.get(course["category"], "")
     box_class = f"box {cat_slug}" if cat_slug else "box"
+    bar_class = f"box-cat-bar {cat_slug}" if cat_slug else "box-cat-bar"
 
     return f"""    <div class="{box_class}">
+      <div class="{bar_class}">{code}</div>
       <div class="box-main">
-        <div class="box-code">{code}</div>
         <div class="box-title-da">{title_da}</div>
         <div class="box-title-en">{title_en}</div>
         <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span>{version_tag}</div>
