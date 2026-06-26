@@ -154,7 +154,7 @@ def render_box(course, slug_map):
         <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span>{version_tag}</div>
         <a class="box-link" href="{webpage}" target="_blank">&#8599; {link_label}</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">DS elements</button><div class="ds-body">{ds_desc}</div></div>
+      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">{ds_desc}</div></div>
     </div>"""
 
 
