@@ -170,7 +170,7 @@
   /* ── Print ── */
   @media print {
     :root { --ds-h: 22px; --ects-w: 27px; }
-    body  { padding: 8mm 8mm; font-size: 9px; }
+    body  { padding: 0; font-size: 9px; }
     h1    { font-size: 10px; margin-bottom: 8px; }
     .grid { gap: 7px; }
     .sem-row { gap: 2px; }
@@ -181,6 +181,7 @@
     .tag          { font-size: 6.5px; padding: 0px 3px; }
     .box-link     { display: none; }
     .sem-label-ds { font-size: 6.5px; }
+    .ds-body      { font-size: 6.5px; padding: 3px 4px 4px; }
     .box-main     { padding: 4px 5px 3px; }
     .sem-label-course strong { font-size: 20px; }
     .sem-label-course span   { font-size: 7.5px; }
@@ -193,7 +194,7 @@
     .sem-row:nth-child(3) { break-after: page; }
   }
 
-  @page { size: A4 landscape; margin: 0; }
+  @page { size: A4 landscape; margin: 8mm; }
 
   /* ── Screen-only: page chrome ── */
   @media screen {
@@ -972,9 +973,22 @@
     bands.forEach(el => { el.style.height = max + 'px'; });
   }
 
+  // In print, equalize per semester row instead of the whole section — one long DS note
+  // shouldn't force every other row's band to grow, since that wastes page space.
+  function equalizeDSPerRow(container) {
+    if (!container) return;
+    container.querySelectorAll('.sem-row').forEach(row => {
+      const bands = row.querySelectorAll('.box-ds, .sem-label-ds');
+      if (!bands.length) return;
+      bands.forEach(el => { el.style.height = ''; });
+      const max = Math.max(...Array.from(bands).map(el => el.offsetHeight));
+      bands.forEach(el => { el.style.height = max + 'px'; });
+    });
+  }
+
   equalizeDS(document.getElementById('sdu-content'));
   window.addEventListener('beforeprint', () => {
-    document.querySelectorAll('[id$="-content"]').forEach(equalizeDS);
+    document.querySelectorAll('[id$="-content"]').forEach(equalizeDSPerRow);
   });
   window.addEventListener('afterprint', () => {
     const active = document.querySelector('.uni-nav a.active');
