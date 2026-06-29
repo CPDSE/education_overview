@@ -11,7 +11,6 @@ import openpyxl
 
 XLSX_PATH = Path(__file__).parent / "Pharma_DS_Course_Overview.xlsx"
 HTML_PATH = Path(__file__).parent / "index.html"
-COLS_PER_ROW = 5
 
 # Shared colour pool — categories are assigned slugs/colours in order, per university.
 SLUG_POOL = ["cat-quant", "cat-chem", "cat-bio", "cat-physio", "cat-form", "cat-practice"]
@@ -95,7 +94,8 @@ def load_courses(sheet_name):
     for row in ws.iter_rows(min_row=2, values_only=True):
         code = row[idx["Course Code"]]
         semester = row[idx["Semester"]]
-        if code is None or semester is None:
+        title_da = row[idx["Danish Title"]]
+        if semester is None or (code is None and not title_da):
             continue
         category = str(row[idx["Course Category 1"]] or "").strip()
         if category and category not in category_order:
@@ -106,7 +106,7 @@ def load_courses(sheet_name):
             "title_en": row[idx["English Title"]] or "",
             "ects": row[idx["ECTS"]],
             "semester": int(semester),
-            "webpage": row[idx["Course Webpage"]] or "#",
+            "webpage": row[idx["Course Webpage"]] if row[idx["Course Webpage"]] not in (None, "-") else "#",
             "category": category,
             "ds_version": row[idx["DS Version"]],
             "ds_desc": row[idx["DS Elements"]] or "",
@@ -126,13 +126,21 @@ def build_category_map(category_order):
     return order, slug_map, color_map
 
 
+URL_RE = re.compile(r"(https?://[^\s)]+)")
+
+
+def linkify(escaped_text):
+    """Turn bare URLs in already-HTML-escaped text into real links."""
+    return URL_RE.sub(r'<a href="\1" target="_blank">\1</a>', escaped_text)
+
+
 def render_box(course, slug_map):
-    code = html.escape(str(course["code"]))
+    code = html.escape(str(course["code"])) if course["code"] is not None else ""
     title_da = html.escape(course["title_da"])
     title_en = html.escape(course["title_en"])
     ects = fmt_ects(course["ects"])
     webpage = html.escape(str(course["webpage"]), quote=True)
-    ds_desc = html.escape(course["ds_desc"])
+    ds_desc = linkify(html.escape(course["ds_desc"]))
     link_label = "Elective catalogue" if course["code"] == "—" else "Course page"
 
     version_label = fmt_ds_version(course["ds_version"])
@@ -145,28 +153,27 @@ def render_box(course, slug_map):
     cat_slug = slug_map.get(course["category"], "")
     box_class = f"box {cat_slug}" if cat_slug else "box"
     bar_class = f"box-cat-bar {cat_slug}" if cat_slug else "box-cat-bar"
+    ects_value = float(course["ects"]) if course["ects"] else 1
 
-    return f"""    <div class="{box_class}">
-      <div class="{bar_class}">{code}</div>
+    return f"""    <div class="{box_class}" style="--ects:{ects_value}">
+      <div class="{bar_class}"><span class="cat-code">{code}</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span>{version_tag}</div></div>
       <div class="box-main">
         <div class="box-title-da">{title_da}</div>
         <div class="box-title-en">{title_en}</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span>{version_tag}</div>
         <a class="box-link" href="{webpage}" target="_blank">&#8599; {link_label}</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">{ds_desc}</div></div>
+      <div class="box-ds"><div class="ds-body">{ds_desc}</div></div>
     </div>"""
 
 
 def render_semester(sem_num, courses, slug_map):
     season = "Efterår" if sem_num % 2 == 1 else "Forår"
     boxes = [render_box(c, slug_map) for c in courses]
-    while len(boxes) < COLS_PER_ROW:
-        boxes.append('    <div class="box-empty"></div>')
 
     return f"""  <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>{sem_num}</strong><span>({season})</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
 {chr(10).join(boxes)}
   </div>"""

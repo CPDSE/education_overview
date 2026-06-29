@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Course overview – Bachelor of Pharmacy (SDU, from autumn 2024). Shows data science elements across all semesters.">
-<title>Bachelor of Pharmacy – Course Overview (SDU, last updated 26 June 2026)</title>
+<title>Bachelor of Pharmacy – Course Overview (SDU, last updated 29 June 2026)</title>
 <style>
   :root {
     --ds-h: 40px;
+    --ects-w: 41px; /* absolute px-per-ECTS so box width is comparable across all rows */
     /* CPDSE palette */
     --forest:  #3C5E3E;
     --sage:    #5F7D61;
@@ -44,16 +45,16 @@
     width: 100%;
   }
 
-  /* 1 label col + 5 equal course cols */
+  /* 1 fixed label col + course boxes sized proportionally to their ECTS */
   .sem-row {
-    display: grid;
-    grid-template-columns: 72px repeat(5, 1fr);
+    display: flex;
     gap: 3px;
     align-items: stretch;
   }
 
   /* ── Semester bar ── */
   .sem-label {
+    flex: 0 0 72px;
     display: flex;
     flex-direction: column;
     font-size: 13px;
@@ -83,9 +84,22 @@
     margin-bottom: 1px;
   }
   .sem-label-course .sem-tag { color: var(--gold); }
+  .sem-label-ds {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-top: 1.5px solid #D0D0D0;
+    background: #F2F2F2;
+    padding: 4px;
+    font-size: 13px; font-weight: bold; color: var(--forest); letter-spacing: 0.02em;
+  }
 
   /* ── Course box ── */
+  /* each box sets --ects inline; width is an absolute px-per-ECTS scale so it's comparable across every row */
   .box {
+    flex: 0 0 calc(var(--ects-w) * var(--ects, 1));
     border: 1px solid var(--mint);
     display: flex;
     flex-direction: column;
@@ -100,70 +114,73 @@
     font-size: 16px;
     font-weight: bold;
     color: var(--charcoal);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
   }
+  .cat-code { white-space: nowrap; }
   /* Category bar colours — soft pastels, distinguishable, harmonising with the CPDSE palette */
-  .box-cat-bar.cat-quant    { background: #DECBE4; }
-  .box-cat-bar.cat-chem     { background: #B3CDE3; }
-  .box-cat-bar.cat-bio      { background: #CCEBC5; }
-  .box-cat-bar.cat-physio   { background: #FBB4AE; }
-  .box-cat-bar.cat-form     { background: #FED9A6; }
-  .box-cat-bar.cat-practice { background: #FFFFCC; }
+  .box-cat-bar.cat-quant    { background: #DECBE4; --cat-color: #DECBE4; }
+  .box-cat-bar.cat-chem     { background: #B3CDE3; --cat-color: #B3CDE3; }
+  .box-cat-bar.cat-bio      { background: #CCEBC5; --cat-color: #CCEBC5; }
+  .box-cat-bar.cat-physio   { background: #FBB4AE; --cat-color: #FBB4AE; }
+  .box-cat-bar.cat-form     { background: #FED9A6; --cat-color: #FED9A6; }
+  .box-cat-bar.cat-practice { background: #FFFFCC; --cat-color: #FFFFCC; }
+  /* Tags inside a coloured bar pick up a lighter (ECTS) / darker (DS version) tint of that bar's colour */
+  .box-cat-bar[class*="cat-"] .tag-ects {
+    background: color-mix(in srgb, var(--cat-color) 35%, white);
+    border-color: color-mix(in srgb, var(--cat-color) 65%, white);
+  }
+  .box-cat-bar[class*="cat-"] .tag-new {
+    background: color-mix(in srgb, var(--cat-color) 70%, black);
+    border-color: color-mix(in srgb, var(--cat-color) 70%, black);
+  }
   .box-main {
     padding: 6px 7px 5px;
     flex: 1;
+    display: flex;
+    flex-direction: column;
   }
   .box-title-da   { font-size: 17px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
-  .box-title-en   { font-size: 15px; font-style: italic; color: var(--sage); line-height: 1.3; margin-bottom: 4px; }
+  .box-title-en   { font-size: 15px; font-style: italic; color: #6B6B6B; line-height: 1.3; margin-bottom: 4px; }
   .box-meta       { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 3px; }
 
   .tag            { font-size: 13px; font-weight: bold; padding: 1px 4px; border-radius: 2px; line-height: 1.5; white-space: nowrap; }
   .tag-ects       { background: #E8E8E8; color: var(--charcoal); border: 1px solid #C8C8C8; }
   .tag-new        { background: #6B6B6B; color: #fff; border: 1px solid #6B6B6B; }
 
-  .box-link       { display: block; font-size: 14px; color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
+  .box-link       { display: block; margin-top: auto; padding-top: 4px; font-size: 14px; color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
   .box-link:hover { color: var(--sage); }
 
-  /* DS band — fixed height matching --ds-h, always at bottom */
+  /* DS band — always expanded, static, always at bottom */
   .box-ds {
     flex-shrink: 0;
-    height: var(--ds-h);
+    min-height: var(--ds-h);
     border-top: 1.5px solid #D0D0D0;
     background: #F2F2F2;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
-  .ds-toggle {
-    all: unset;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
-    width: 100%; cursor: pointer;
-    padding: 0 7px;
-    height: var(--ds-h);
-    font-size: 13px; font-weight: bold; color: var(--forest); letter-spacing: 0.02em;
-  }
-  .ds-toggle:hover { background: #E4E4E4; }
-  /* When expanded, box-ds grows to show content */
-  .box-ds.expanded { height: auto; }
-  .ds-body        { display: none; padding: 6px 8px 8px; font-size: 14px; line-height: 1.5; color: var(--charcoal); border-top: 0.5px solid #D0D0D0; }
-  .ds-body.open   { display: block; }
-
-  .box-empty      { border: none; background: transparent; }
+  .ds-body        { padding: 6px 8px 8px; font-size: 14px; line-height: 1.5; color: var(--charcoal); }
+  .ds-body a      { color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
+  .ds-body a:hover { color: var(--sage); }
 
   /* ── Print ── */
   @media print {
-    :root { --ds-h: 22px; }
+    :root { --ds-h: 22px; --ects-w: 27px; }
     body  { padding: 8mm 8mm; font-size: 9px; }
-    .box-empty { border: none; }
     h1    { font-size: 10px; margin-bottom: 8px; }
     .grid { gap: 7px; }
-    .sem-row { grid-template-columns: 60px repeat(5, 1fr); gap: 2px; }
+    .sem-row { gap: 2px; }
+    .sem-label { flex-basis: 60px; }
     .box-cat-bar  { font-size: 9px; padding: 3px 5px; }
     .box-title-da { font-size: 8.5px; }
     .box-title-en { font-size: 7px; }
     .tag          { font-size: 6.5px; padding: 0px 3px; }
     .box-link     { display: none; }
-    .ds-toggle    { font-size: 6.5px; }
+    .sem-label-ds { font-size: 6.5px; }
     .box-main     { padding: 4px 5px 3px; }
     .sem-label-course strong { font-size: 20px; }
     .sem-label-course span   { font-size: 7.5px; }
@@ -174,9 +191,6 @@
     .sem-row { break-inside: avoid; page-break-inside: avoid; }
     /* Force page break after 3rd semester */
     .sem-row:nth-child(3) { break-after: page; }
-    /* Hide expanded DS bodies in print */
-    .ds-body { display: none !important; }
-    .box-ds.expanded { height: var(--ds-h) !important; }
   }
 
   @page { size: A4 landscape; margin: 0; }
@@ -322,7 +336,7 @@
     <img class="uni-logo" src="assets/SDU_logo.png" alt="University of Southern Denmark logo">
   </div>
   <div class="page-header-center">
-    <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, last updated 26 June 2026)</div>
+    <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, last updated 29 June 2026)</div>
   </div>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
 </header>
@@ -336,325 +350,319 @@
   <button class="legend-btn" data-cat="cat-practice" style="background:#FFFFCC" onclick="toggleCategoryFilter(this)">Pharmacy Practice &amp; Society</button>
 <!-- /LEGEND:sdu --></div>
 
-<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 26 June 2026)</h1>
+<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 29 June 2026)</h1>
 
 <div class="grid"><!-- GRID:sdu -->
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>1</strong><span>(Efterår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">FA501</div>
+    <div class="box cat-quant" style="--ects:10.0">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">FA501</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Iterative refinement of the data science upgrade.">DS v2.1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaci grundkursus</div>
         <div class="box-title-en">Pharmacy introductory course</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Iterative refinement of the data science upgrade.">DS v2.1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa501&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">Intro to coding in R, Data analysis in R, Data visualization in R</div></div>
+      <div class="box-ds"><div class="ds-body">Intro to coding in R, Data analysis in R, Data visualization in R</div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">KE557</div>
+    <div class="box cat-chem" style="--ects:5.0">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">KE557</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Almen kemi</div>
         <div class="box-title-en">General Chemistry</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=180287&amp;lang=da&amp;listid=" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">KE558</div>
+    <div class="box cat-chem" style="--ects:5.0">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">KE558</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Indledende organisk kemi</div>
         <div class="box-title-en">Fundamental Organic Chemistry</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=168734&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">KE521</div>
+    <div class="box cat-chem" style="--ects:5.0">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">KE521</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Grundstoffernes Kemi</div>
         <div class="box-title-en">Chemistry of the elements</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=197532&amp;lang=da&amp;listid=" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">MM556</div>
+    <div class="box cat-quant" style="--ects:5.0">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">MM556</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Matematik og statistik for farmaci</div>
         <div class="box-title-en">Mathematics and statistics for pharmacy</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=mm556&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">Math and statistics foundations, Intro to coding in R</div></div>
+      <div class="box-ds"><div class="ds-body">Math and statistics foundations, Intro to coding in R</div></div>
     </div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>2</strong><span>(Forår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">FA508</div>
+    <div class="box cat-bio" style="--ects:10.0">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">FA508</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk Biologi</div>
         <div class="box-title-en">Pharmaceutical Biology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa508&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">FY528</div>
+    <div class="box cat-quant" style="--ects:5.0">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">FY528</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Fysik for Biologi og Farmaci</div>
         <div class="box-title-en">Physics for Biology and Pharmacy</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fy528&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">Data analysis in R</div></div>
+      <div class="box-ds"><div class="ds-body">Data analysis in R</div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">BMB528</div>
+    <div class="box cat-bio" style="--ects:5.0">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">BMB528</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk Mikrobiologi</div>
         <div class="box-title-en">Pharmaceutical Microbiology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bmb528&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box">
-      <div class="box-cat-bar">FF501</div>
+    <div class="box" style="--ects:10.0">
+      <div class="box-cat-bar"><span class="cat-code">FF501</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Førsteårsprojekt</div>
         <div class="box-title-en">First year project</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=ff501&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>3</strong><span>(Efterår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-physio">
-      <div class="box-cat-bar cat-physio">SU520</div>
+    <div class="box cat-physio" style="--ects:7.5">
+      <div class="box-cat-bar cat-physio"><span class="cat-code">SU520</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 1: molekyler og celler</div>
         <div class="box-title-en">Physiology and pharmacology for pharmacists - Module 1: molecules and cells</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su520&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-form">
-      <div class="box-cat-bar cat-form">FA511</div>
+    <div class="box cat-form" style="--ects:7.5">
+      <div class="box-cat-bar cat-form"><span class="cat-code">FA511</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Lægemiddelformulering og fremstilling A</div>
         <div class="box-title-en">Drug formulation and production A</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="http://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa511&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">Data analysis in R, Data visualization in R, Report writing in R</div></div>
+      <div class="box-ds"><div class="ds-body">Data analysis in R, Data visualization in R, Report writing in R</div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">FA515</div>
+    <div class="box cat-chem" style="--ects:5.0">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">FA515</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk fysisk kemi</div>
         <div class="box-title-en">Pharmaceutical Physical Chemistry</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=202312&amp;lang=da&amp;listid=" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">BMB530</div>
+    <div class="box cat-bio" style="--ects:5.0">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">BMB530</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Grundlæggende biokemi</div>
         <div class="box-title-en">Basic Biochemistry</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bmb530&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">BMB504</div>
+    <div class="box cat-bio" style="--ects:5.0">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">BMB504</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Fundamental Molekylær Biologi</div>
         <div class="box-title-en">Fundamental Molecular Biology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bmb504&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>4</strong><span>(Forår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-physio">
-      <div class="box-cat-bar cat-physio">SU517</div>
+    <div class="box cat-physio" style="--ects:5.0">
+      <div class="box-cat-bar cat-physio"><span class="cat-code">SU517</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 2: hjerte, kar og nyrer</div>
         <div class="box-title-en">Physiology and pharmacology for pharmacists – Module 2: Heart, vessels and kidneys</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su517&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-form">
-      <div class="box-cat-bar cat-form">FA503</div>
+    <div class="box cat-form" style="--ects:5.0">
+      <div class="box-cat-bar cat-form"><span class="cat-code">FA503</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Lægemiddelformulering og fremstilling B</div>
         <div class="box-title-en">Drug formulation and production B</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa503&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">Data analysis in R, Data visualization in R, Report writing in R</div></div>
+      <div class="box-ds"><div class="ds-body">Data analysis in R, Data visualization in R, Report writing in R</div></div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">FA507</div>
+    <div class="box cat-quant" style="--ects:10.0">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">FA507</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Instrumentel farmaceutisk analyse</div>
         <div class="box-title-en">Instrumental pharmaceutical analysis</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa507&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body">Statistical analysis (hypothesis testing, linear regression analysis)</div></div>
+      <div class="box-ds"><div class="ds-body">Statistical analysis (hypothesis testing, linear regression analysis)</div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">KE505</div>
+    <div class="box cat-chem" style="--ects:10.0">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">KE505</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Organisk Kemi</div>
         <div class="box-title-en">Organic chemistry</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=ke505&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>5</strong><span>(Efterår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-physio">
-      <div class="box-cat-bar cat-physio">SU518</div>
+    <div class="box cat-physio" style="--ects:5.0">
+      <div class="box-cat-bar cat-physio"><span class="cat-code">SU518</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Fysiologi og farmakologi for farmaceuter – modul 3: Respiration, mave-tarm-system og immunologi</div>
         <div class="box-title-en">Physiology and pharmacology for pharmacists – Module 3: Respiration, GI-system, and Immunology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su518&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-form">
-      <div class="box-cat-bar cat-form">FA504</div>
+    <div class="box cat-form" style="--ects:5.0">
+      <div class="box-cat-bar cat-form"><span class="cat-code">FA504</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Lægemiddelformulering og fremstilling C</div>
         <div class="box-title-en">Drug formulation and production C</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa504&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">FA505</div>
+    <div class="box cat-chem" style="--ects:5.0">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">FA505</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Naturstofkemi og farmakognosi</div>
         <div class="box-title-en">Natural Products Chemistry and Pharmacognosy</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa505&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">BB555</div>
+    <div class="box cat-bio" style="--ects:5.0">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">BB555</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Toksikologi</div>
         <div class="box-title-en">Toxicology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="TBD" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-practice">
-      <div class="box-cat-bar cat-practice">SU511</div>
+    <div class="box cat-practice" style="--ects:5.0">
+      <div class="box-cat-bar cat-practice"><span class="cat-code">SU511</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Samfundsfarmaci</div>
         <div class="box-title-en">Social pharmacy</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su511&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
+    </div>
+    <div class="box" style="--ects:5.0">
+      <div class="box-cat-bar"><span class="cat-code"></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
+      <div class="box-main">
+        <div class="box-title-da">Konstituerende valgfag</div>
+        <div class="box-title-en">Constituent elective</div>
+        <a class="box-link" href="https://www.sdu.dk/da/uddannelse/bachelor/farmaci/opbygning" target="_blank">&#8599; Course page</a>
+      </div>
+      <div class="box-ds"><div class="ds-body">FA516: Kemisk og farmaceutisk data science (<a href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=206899&amp;lang=en&amp;listid=" target="_blank">https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=206899&amp;lang=en&amp;listid=</a>)</div></div>
     </div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>6</strong><span>(Forår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-physio">
-      <div class="box-cat-bar cat-physio">SU519</div>
+    <div class="box cat-physio" style="--ects:5.0">
+      <div class="box-cat-bar cat-physio"><span class="cat-code">SU519</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 4: Hormoner, kirtler, knogler og nervesystem</div>
         <div class="box-title-en">Module 4. Physiology and Pharmacology for Pharmacists: Hormones, glands, bones and nervous system</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su519&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-form">
-      <div class="box-cat-bar cat-form">FA514</div>
+    <div class="box cat-form" style="--ects:5.0">
+      <div class="box-cat-bar cat-form"><span class="cat-code">FA514</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Data science upgrade version not yet determined.">DS TBD</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Lægemiddelformulering og fremstilling D</div>
         <div class="box-title-en">Drug formulation and production D</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Data science upgrade version not yet determined.">DS TBD</span></div>
         <a class="box-link" href="TBD" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">FA506</div>
+    <div class="box cat-chem" style="--ects:5.0">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">FA506</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Medicinalkemi A</div>
         <div class="box-title-en">Medicinal Chemistry A</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa506&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box">
-      <div class="box-cat-bar">BAFA500</div>
+    <div class="box" style="--ects:5.0">
+      <div class="box-cat-bar"><span class="cat-code"></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
+      <div class="box-main">
+        <div class="box-title-da">Valgfag</div>
+        <div class="box-title-en">Elective</div>
+        <a class="box-link" href="https://www.sdu.dk/da/uddannelse/bachelor/farmaci/opbygning" target="_blank">&#8599; Course page</a>
+      </div>
+      <div class="box-ds"><div class="ds-body"></div></div>
+    </div>
+    <div class="box" style="--ects:10.0">
+      <div class="box-cat-bar"><span class="cat-code">BAFA500</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Bachelorprojekt i farmaci</div>
         <div class="box-title-en">Bachelor&#x27;s Project in Pharmacy</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div>
         <a class="box-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bafa500&amp;lang=da" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 <!-- /GRID:sdu --></div>
 
 <footer class="page-footer">
-  <span>Last updated 26 June 2026 · University of Southern Denmark</span>
+  <span>Last updated 29 June 2026 · University of Southern Denmark</span>
   <span>
-    <a href="https://www.cpdse.dk" target="_blank">cpdse.dk</a>
+    <a href="https://cpdse.dk" target="_blank">cpdse.dk</a>
     &nbsp;·&nbsp;
-    <a href="https://odin.sdu.dk" target="_blank">SDU course database</a>
+    <a href="https://www.sdu.dk/da/uddannelse/bachelor/farmaci/opbygning" target="_blank">SDU course database</a>
   </span>
 </footer>
 
@@ -664,13 +672,13 @@
 
 <header class="page-header">
   <div class="page-header-left">
-    <a href="https://www.cpdse.dk" target="_blank">
+    <a href="https://cpdse.dk" target="_blank">
       <img class="cpdse-logo" src="assets/CPDSE_logo_wide_green.png" alt="Center for Pharmaceutical Data Science Education logo">
     </a>
     <img class="uni-logo" src="assets/KU_logo.png" alt="University of Copenhagen logo">
   </div>
   <div class="page-header-center">
-    <div class="page-title">University of Copenhagen – Course Overview (last updated 26 June 2026)</div>
+    <div class="page-title">University of Copenhagen – Course Overview (last updated 29 June 2026)</div>
   </div>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
 </header>
@@ -682,277 +690,253 @@
   <button class="legend-btn" data-cat="cat-physio" style="background:#FBB4AE" onclick="toggleCategoryFilter(this)">Use of drugs</button>
 <!-- /LEGEND:ucph --></div>
 
-<h1 style="display:none">University of Copenhagen – Course Overview (last updated 26 June 2026)</h1>
+<h1 style="display:none">University of Copenhagen – Course Overview (last updated 29 June 2026)</h1>
 
 <div class="grid"><!-- GRID:ucph -->
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>1</strong><span>(Efterår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">SFAB20001U</div>
+    <div class="box cat-quant" style="--ects:7.5">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">SFAB20001U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Lægemiddeludvikling fra molekyle til menneske</div>
         <div class="box-title-en">Drug Development from Molecule to Man</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20001U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">SFAB20002U</div>
+    <div class="box cat-chem" style="--ects:7.5">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">SFAB20002U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Kemiske principper</div>
         <div class="box-title-en">Chemical Principles</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20002U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">SFAB20004U</div>
+    <div class="box cat-bio" style="--ects:7.5">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">SFAB20004U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Cellulær og molekylær biologi</div>
         <div class="box-title-en">Cellular and Molecular Biology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20004U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">SFAB20006U</div>
+    <div class="box cat-chem" style="--ects:7.5">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">SFAB20006U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Organisk kemi I</div>
         <div class="box-title-en">Organic Chemistry I – Physicochemical Properties</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20006U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>2</strong><span>(Forår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">SFAB20023U</div>
+    <div class="box cat-quant" style="--ects:7.5">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">SFAB20023U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk fysisk kemi I</div>
         <div class="box-title-en">Pharmaceutical Physical Chemistry I – Thermodynamics and Equilibria</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20023U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">SFAB20025U</div>
+    <div class="box cat-chem" style="--ects:7.5">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">SFAB20025U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Kvalitetsvurdering af farmaceutiske råvarer</div>
         <div class="box-title-en">Evaluation of Pharmaceutical Substances</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20025U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">SFAB20027U</div>
+    <div class="box cat-bio" style="--ects:7.5">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">SFAB20027U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk biologi</div>
         <div class="box-title-en">Pharmaceutical Biology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20027U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">SFAB20029U</div>
+    <div class="box cat-chem" style="--ects:7.5">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">SFAB20029U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Organisk kemi II – syntese af lægemiddelstoffer</div>
         <div class="box-title-en">Organic Chemistry II – Synthesis of Drug Compounds</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20029U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>3</strong><span>(Efterår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-physio">
-      <div class="box-cat-bar cat-physio">SFAB20012U</div>
+    <div class="box cat-physio" style="--ects:7.5">
+      <div class="box-cat-bar cat-physio"><span class="cat-code">SFAB20012U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Videnskabsteori og samfundsfarmaci</div>
         <div class="box-title-en">Philosophy of Science and Social Pharmacy</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20012U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">SFAB20013U</div>
+    <div class="box cat-bio" style="--ects:7.5">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">SFAB20013U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Basal farmakologi</div>
         <div class="box-title-en">Basic Pharmacology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Second iteration of the data science upgrade.">DS v2</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20013U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">SFAB20017U</div>
+    <div class="box cat-quant" style="--ects:7.5">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">SFAB20017U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk fysisk kemi II</div>
         <div class="box-title-en">Pharmaceutical Physical Chemistry II – Kinetics and Transport Phenomena</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20017U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">SFAB20015U</div>
+    <div class="box cat-chem" style="--ects:7.5">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">SFAB20015U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Biopharmaceuticals – bioorganisk kemi</div>
         <div class="box-title-en">Biopharmaceuticals – Bioorganic Chemistry</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20015U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>4</strong><span>(Forår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-physio">
-      <div class="box-cat-bar cat-physio">SFAB20033U</div>
+    <div class="box cat-physio" style="--ects:7.5">
+      <div class="box-cat-bar cat-physio"><span class="cat-code">SFAB20033U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Samfundsfarmaci – metode og formidling</div>
         <div class="box-title-en">Social Pharmacy – Method and Dissemination</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20033U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">SFAB20035U</div>
+    <div class="box cat-chem" style="--ects:7.5">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">SFAB20035U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk analytisk kemi</div>
         <div class="box-title-en">Pharmaceutical Analytical Chemistry</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20035U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">SFAB20031U</div>
+    <div class="box cat-quant" style="--ects:7.5">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">SFAB20031U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaci I – flydende og halvfaste lægemiddelformer</div>
         <div class="box-title-en">Pharmaceutics I – Liquid and Semi-Solid Dosage Forms</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20031U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">SFAB23001U</div>
+    <div class="box cat-bio" style="--ects:7.5">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">SFAB23001U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Organfarmakologi</div>
         <div class="box-title-en">Organ Pharmacology</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB23001U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>5</strong><span>(Efterår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-chem">
-      <div class="box-cat-bar cat-chem">SFAB20008U</div>
+    <div class="box cat-chem" style="--ects:7.5">
+      <div class="box-cat-bar cat-chem"><span class="cat-code">SFAB20008U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Lægemidler fra naturen</div>
         <div class="box-title-en">Drugs from Nature</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20008U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-quant">
-      <div class="box-cat-bar cat-quant">SFAB20010U</div>
+    <div class="box cat-quant" style="--ects:7.5">
+      <div class="box-cat-bar cat-quant"><span class="cat-code">SFAB20010U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaci II – faste lægemiddelformer</div>
         <div class="box-title-en">Pharmaceutics II – Solid Dosage Forms</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20010U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box cat-bio">
-      <div class="box-cat-bar cat-bio">SFABIL117U</div>
+    <div class="box cat-bio" style="--ects:7.5">
+      <div class="box-cat-bar cat-bio"><span class="cat-code">SFABIL117U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Systemfarmakologi</div>
         <div class="box-title-en">Systems Pharmacology – Signaling Pathways</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFABIL117U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
-    <div class="box-empty"></div>
   </div>
 
   <div class="sem-row">
     <div class="sem-label">
       <div class="sem-label-course"><div class="sem-tag">Semester</div><strong>6</strong><span>(Forår)</span></div>
+      <div class="sem-label-ds">Data Science Elements</div>
     </div>
-    <div class="box cat-physio">
-      <div class="box-cat-bar cat-physio">SFAB20019U</div>
+    <div class="box cat-physio" style="--ects:7.5">
+      <div class="box-cat-bar cat-physio"><span class="cat-code">SFAB20019U</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmakoterapi</div>
         <div class="box-title-en">Pharmacotherapy</div>
-        <div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span><span class="tag tag-new" title="Initial data science upgrade.">DS v1</span></div>
         <a class="box-link" href="https://kurser.ku.dk/course/SFAB20019U" target="_blank">&#8599; Course page</a>
       </div>
-      <div class="box-ds"><button class="ds-toggle" aria-expanded="false" onclick="toggleDS(this)">Data Science Elements</button><div class="ds-body"></div></div>
+      <div class="box-ds"><div class="ds-body"></div></div>
     </div>
-    <div class="box-empty"></div>
-    <div class="box-empty"></div>
-    <div class="box-empty"></div>
-    <div class="box-empty"></div>
+    <div class="box" style="--ects:15.0">
+      <div class="box-cat-bar"><span class="cat-code"></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">15 ECTS</span></div></div>
+      <div class="box-main">
+        <div class="box-title-da">Bachelorprojekt i farmaci</div>
+        <div class="box-title-en">Bachelor&#x27;s Project in Pharmacy</div>
+        <a class="box-link" href="#" target="_blank">&#8599; Course page</a>
+      </div>
+      <div class="box-ds"><div class="ds-body"></div></div>
+    </div>
   </div>
 <!-- /GRID:ucph --></div>
 
 <footer class="page-footer">
-  <span>Last updated 26 June 2026 · University of Copenhagen</span>
+  <span>Last updated 29 June 2026 · University of Copenhagen</span>
   <span>
     <a href="https://www.cpdse.dk" target="_blank">cpdse.dk</a>
     &nbsp;·&nbsp;
-    <a href="https://kurser.ku.dk" target="_blank">KU course database</a>
+    <a href="https://kurser.ku.dk" target="_blank">UCPH course database</a>
   </span>
 </footer>
 
 </div><!-- /ucph-content -->
 
 <script>
-  function toggleDS(btn) {
-    const expanded = btn.getAttribute('aria-expanded') === 'true';
-    btn.setAttribute('aria-expanded', String(!expanded));
-    const ds = btn.closest('.box-ds');
-    ds.classList.toggle('expanded', !expanded);
-    btn.setAttribute('aria-expanded', String(!expanded));
-    btn.nextElementSibling.classList.toggle('open', !expanded);
-  }
-
   function toggleCategoryFilter(btn) {
     btn.classList.toggle('active');
     const scope = btn.closest('[id$="-content"]') || document;
@@ -975,7 +959,27 @@
     document.querySelectorAll('.uni-nav a').forEach(a => {
       a.classList.toggle('active', a.dataset.uni === uni);
     });
+    equalizeDS(document.getElementById(uni + '-content'));
   }
+
+  // Make every "Data Science Elements" band (incl. the semester-label strip) the same height as the tallest one in its section.
+  function equalizeDS(container) {
+    if (!container) return;
+    const bands = container.querySelectorAll('.box-ds, .sem-label-ds');
+    if (!bands.length) return;
+    bands.forEach(el => { el.style.height = ''; });
+    const max = Math.max(...Array.from(bands).map(el => el.offsetHeight));
+    bands.forEach(el => { el.style.height = max + 'px'; });
+  }
+
+  equalizeDS(document.getElementById('sdu-content'));
+  window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('[id$="-content"]').forEach(equalizeDS);
+  });
+  window.addEventListener('afterprint', () => {
+    const active = document.querySelector('.uni-nav a.active');
+    equalizeDS(document.getElementById((active ? active.dataset.uni : 'sdu') + '-content'));
+  });
 </script>
 </body>
 </html>
