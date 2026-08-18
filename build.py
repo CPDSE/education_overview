@@ -134,6 +134,13 @@ def linkify(escaped_text):
     return URL_RE.sub(r'<a href="\1" target="_blank">\1</a>', escaped_text)
 
 
+def is_ds_v2_plus(value):
+    """True for numeric DS versions >= 2 (excludes blanks and non-numeric placeholders like 'TBD')."""
+    if value is None or value == "" or isinstance(value, str):
+        return False
+    return float(value) >= 2
+
+
 def render_box(course, slug_map):
     code = html.escape(str(course["code"])) if course["code"] is not None else ""
     title_da = html.escape(course["title_da"])
@@ -143,15 +150,17 @@ def render_box(course, slug_map):
     ds_desc = linkify(html.escape(course["ds_desc"]))
     link_label = "Elective catalogue" if course["code"] == "—" else "Course page"
 
+    is_ds_hi = is_ds_v2_plus(course["ds_version"])
     version_label = fmt_ds_version(course["ds_version"])
     version_tooltip = html.escape(fmt_ds_tooltip(course["ds_version"]), quote=True)
     version_tag = (
         f'<span class="tag tag-new" title="{version_tooltip}">{html.escape(version_label)}</span>'
-        if version_label else ""
+        if version_label and is_ds_hi else ""
     )
 
     cat_slug = slug_map.get(course["category"], "")
-    box_class = f"box {cat_slug}" if cat_slug else "box"
+    ds_hi_class = " box-ds-hi" if is_ds_hi else ""
+    box_class = f"box{ds_hi_class} {cat_slug}" if cat_slug else f"box{ds_hi_class}"
     bar_class = f"box-cat-bar {cat_slug}" if cat_slug else "box-cat-bar"
     ects_value = float(course["ects"]) if course["ects"] else 1
 
