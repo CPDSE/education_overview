@@ -28,6 +28,67 @@ DS_CATEGORIES = {
     "Visualization and reporting": ("ds-visualization", "#B08D00"),
 }
 
+# (group, summary, examples) shown in the explanation panel and as tooltips.
+DS_DESCRIPTIONS = {
+    "Mathematics and statistics": (
+        "Foundations",
+        "The concepts behind the methods: functions and rates of change, basic calculus, "
+        "linear algebra, distributions, uncertainty, hypothesis testing and regression.",
+        "Linearization, a degradation rate as a derivative, AUC as an integral, a dataset as a "
+        "matrix, standard errors and confidence intervals, t-tests and ANOVA.",
+    ),
+    "Computing and programming": (
+        "Foundations",
+        "Digital literacy and the thinking behind programming, so skills carry over between "
+        "languages and tools. R is the main teaching language, used to build scripts and workflows "
+        "others can rerun. Also covers troubleshooting code and critical use of AI tools.",
+        "Organizing files and projects, writing and rerunning R scripts, reading error messages, "
+        "finding help, using AI assistants critically when writing code.",
+    ),
+    "Data governance": (
+        "Data workflow",
+        "How data is organized, documented, stored and protected so it can be found, understood, "
+        "trusted and reused, including the ethical and legal responsibilities of health data.",
+        "Tidy data structure, file naming, metadata and the FAIR principles, keeping raw data "
+        "unchanged, secure storage, GDPR and anonymization.",
+    ),
+    "Data handling": (
+        "Data workflow",
+        "Getting data into a usable shape: importing, cleaning, handling missing values and basic "
+        "transformations, done reproducibly.",
+        "Importing instrument output or spreadsheets, filtering and selecting, creating variables, "
+        "converting units, joining tables, reshaping between wide and long format.",
+    ),
+    "Exploration": (
+        "Data workflow",
+        "Getting to know the data before drawing conclusions: quick summaries and plots to see "
+        "patterns, catch problems and check whether the data suit the planned analysis.",
+        "Histograms, boxplots and scatter plots, summary tables by group, spotting outliers, "
+        "checking assumptions such as normality or linearity.",
+    ),
+    "Analysis and modelling": (
+        "Data workflow",
+        "Extracting results from data and judging how reliable they are, from statistical analysis "
+        "to mechanistic models whose parameters have real meaning.",
+        "t-tests and ANOVA, correlation, linear and nonlinear regression, confidence intervals on "
+        "parameters, reaction and release kinetics, dose-response and pharmacokinetic models.",
+    ),
+    "Machine learning and AI": (
+        "Data workflow",
+        "Methods that learn patterns from data to reduce dimensions, find groups or predict "
+        "outcomes, including tuning, validation and a conceptual understanding of modern AI.",
+        "PCA, k-means and hierarchical clustering, random forests, training and test sets, "
+        "cross-validation and overfitting, the basic ideas behind neural networks and LLMs.",
+    ),
+    "Visualization and reporting": (
+        "Data workflow",
+        "Communicating data and results through clear, well-designed figures and transparent "
+        "reports that show both the findings and how they were reached.",
+        "Choosing the right plot type, figure design, showing uncertainty, reproducible reports "
+        "that combine text, code and results (e.g. Quarto), posters and presentations.",
+    ),
+}
+
 # Fixed order preserves the SDU category->colour assignment already established.
 SDU_CATEGORY_ORDER = [
     "Quantitative & Analytical Methods",
@@ -84,6 +145,63 @@ def parse_categories(value, code):
     return categories
 
 
+def parse_notes(value):
+    """Parse lines of 'Category: note' into (category, note) pairs."""
+    notes = []
+    for line in str(value or "").splitlines():
+        category, _, note = line.partition(":")
+        category, note = category.strip(), note.strip()
+        if not category:
+            continue
+        if category not in DS_CATEGORIES:
+            raise ValueError(f"Unknown data-science category in course details: {category}")
+        notes.append((category, note))
+    return notes
+
+
+def load_details(wb, sheet_name):
+    """Optional '<sheet> Details' sheet: one row per course code."""
+    name = f"{sheet_name} Details"
+    if name not in wb.sheetnames:
+        return {}
+    ws = wb[name]
+    headers = [c.value for c in ws[1]]
+    idx = {h: i for i, h in enumerate(headers)}
+    details = {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        code = row[idx["Course Code"]]
+        if not code:
+            continue
+        details[str(code)] = {
+            "summary": str(row[idx["Summary"]] or "").strip(),
+            "primary": parse_notes(row[idx["Primary Notes"]]),
+            "secondary": parse_notes(row[idx["Secondary Notes"]]),
+        }
+    return details
+
+
+def render_details_template(course, details):
+    def note_items(notes, css_class):
+        return "".join(
+            f'<div class="detail-note {css_class}" style="--ds-color:{DS_CATEGORIES[cat][1]}">'
+            f'<strong>{html.escape(cat)}</strong><p>{html.escape(note)}</p></div>'
+            for cat, note in notes
+        )
+
+    secondary = (
+        f'<h3>Also present</h3>{note_items(details["secondary"], "detail-secondary")}'
+        if details["secondary"]
+        else ""
+    )
+    return (
+        '<template class="course-details">'
+        f'<h2>{html.escape(str(course["code"]))}: {html.escape(course["title_en"] or course["title_da"])}</h2>'
+        f'<p class="detail-summary">{html.escape(details["summary"])}</p>'
+        f'<h3>Main data science focus</h3>{note_items(details["primary"], "detail-primary")}'
+        f'{secondary}</template>'
+    )
+
+
 def load_courses(sheet_name):
     wb = openpyxl.load_workbook(XLSX_PATH, data_only=True)
     ws = wb[sheet_name]
@@ -93,6 +211,7 @@ def load_courses(sheet_name):
         "DS Primary Categories" in idx and "DS Secondary Categories" in idx
     )
 
+    details = load_details(wb, sheet_name)
     courses = []
     category_order = []
     for row in ws.iter_rows(min_row=2, values_only=True):
@@ -117,6 +236,9 @@ def load_courses(sheet_name):
             "github": (row[idx["GitHub Repository"]] or "") if "GitHub Repository" in idx else "",
             "ds_primary": parse_categories(row[idx["DS Primary Categories"]], code)
             if has_ds_category_mapping else [],
+            "ds_secondary": parse_categories(row[idx["DS Secondary Categories"]], code)
+            if has_ds_category_mapping else [],
+            "details": details.get(str(code)),
         })
 
     courses.sort(key=lambda c: c["semester"])
@@ -161,7 +283,8 @@ def render_ds_badges(categories):
     category_order = {category: index for index, category in enumerate(DS_CATEGORIES)}
     badges = "".join(
         f'<span class="ds-badge {DS_CATEGORIES[category][0]}" '
-        f'data-ds-cat="{DS_CATEGORIES[category][0]}">'
+        f'data-ds-cat="{DS_CATEGORIES[category][0]}" '
+        f'title="{html.escape(DS_DESCRIPTIONS[category][1], quote=True)}">'
         f'{html.escape(category)}</span>'
         for category in sorted(categories, key=category_order.__getitem__)
     )
@@ -207,6 +330,18 @@ def render_box(course, slug_map, show_ds_categories=False):
         if github.startswith("https://")
         else ""
     )
+    details = course.get("details")
+    details_button = (
+        f'<button type="button" class="details-btn" onclick="openCourseDetails(this)" '
+        f'title="How data science is taught in this course" '
+        f'aria-label="Data science details for {code}">i</button>'
+        if details and show_ds_categories
+        else ""
+    )
+    details_template = (
+        "\n      " + render_details_template(course, details) if details_button else ""
+    )
+    box_class += " has-details" if details_button else ""
     ds_section = (
         ""
         if show_ds_categories
@@ -214,7 +349,11 @@ def render_box(course, slug_map, show_ds_categories=False):
     )
     ds_main_content = ""
     if show_ds_categories and has_primary_categories:
-        ds_main_content = f"        {ds_content}"
+        ds_main_content = (
+            f'        <div class="card-foot">{ds_content}{details_button}</div>'
+            if details_button
+            else f"        {ds_content}"
+        )
     elif show_ds_categories and ds_content:
         ds_main_content = f'        <div class="ds-summary">{ds_content}</div>'
 
@@ -225,7 +364,7 @@ def render_box(course, slug_map, show_ds_categories=False):
         <div class="box-title-en">{title_en}</div>
 {ds_main_content}
       </div>
-{ds_section}
+{ds_section}{details_template}
     </div>"""
 
 
@@ -276,8 +415,28 @@ def render_ds_legend():
         items.append(
             f'<button type="button" class="ds-taxonomy-btn" data-ds-cat="{slug}" '
             f'aria-pressed="false" style="--ds-color:{color}" '
+            f'title="{html.escape(DS_DESCRIPTIONS[category][1], quote=True)}" '
             f'onclick="toggleDSCategoryFilter(this)">{html.escape(category)}</button>'
         )
+    groups = []
+    for group in dict.fromkeys(d[0] for d in DS_DESCRIPTIONS.values()):
+        entries = "".join(
+            f'<div class="ds-info-item" style="--ds-color:{DS_CATEGORIES[category][1]}">'
+            f'<strong>{html.escape(category)}</strong>'
+            f'<p>{html.escape(summary)}</p>'
+            f'<p class="ds-info-examples"><em>Examples:</em> {html.escape(examples)}</p></div>'
+            for category, (g, summary, examples) in DS_DESCRIPTIONS.items()
+            if g == group
+        )
+        groups.append(
+            f'<div class="ds-info-group"><h3>{html.escape(group)}</h3>'
+            f'<div class="ds-info-grid">{entries}</div></div>'
+        )
+    info = (
+        '<details class="ds-info"><summary>What do the categories mean?</summary>'
+        + "".join(groups)
+        + '</details>'
+    )
     return (
         '<div class="ds-taxonomy-legend" aria-label="Filter by data science category">'
         '<button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" '
@@ -285,6 +444,7 @@ def render_ds_legend():
         'Data Science</button>'
         + "".join(items)
         + '</div>'
+        + info
     )
 
 

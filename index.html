@@ -119,7 +119,8 @@
   /* ── Course box ── */
   /* each box sets --ects inline; width is an absolute px-per-ECTS scale so it's comparable across every row */
   .box {
-    flex: 0 0 calc(var(--ects-w) * var(--ects, 1));
+    /* basis is the minimum width; spare row width is shared in proportion to ECTS */
+    flex: var(--ects, 1) 0 calc(var(--ects-w) * var(--ects, 1));
     border: 1px solid #D8D8D8;
     display: flex;
     flex-direction: column;
@@ -174,6 +175,37 @@
     color: var(--charcoal); text-decoration: none; background: rgba(255,255,255,0.55);
   }
   .repo-link::before { content: "↗ "; }
+  .details-btn {
+    all: unset; cursor: pointer; flex: 0 0 auto;
+    width: 22px; height: 22px; box-sizing: border-box; text-align: center;
+    border: 1.5px solid #888; border-radius: 50%;
+    font: italic bold 13px/19px Georgia, serif; color: #555; background: #fff;
+  }
+  .details-btn:hover { border-color: #000; color: #000; }
+  .details-btn:focus-visible { outline: 2px solid #666; outline-offset: 2px; }
+  .card-foot { display: flex; align-items: flex-end; gap: 6px; margin-top: auto; }
+  .card-foot .ds-category-list { flex: 1; margin-top: 0; padding-top: 8px; }
+  .box.has-details .box-main { cursor: pointer; }
+  .course-modal {
+    margin: auto; width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 48px);
+    border: 1px solid #C8C8C8; border-radius: 6px; padding: 0; color: var(--charcoal);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  }
+  .course-modal::backdrop { background: rgba(0,0,0,0.35); }
+  .course-modal-close {
+    all: unset; cursor: pointer; position: absolute; top: 8px; right: 12px;
+    font-size: 26px; line-height: 1; color: #777;
+  }
+  .course-modal-close:hover { color: #000; }
+  .course-modal-close:focus-visible { outline: 2px solid #666; outline-offset: 2px; }
+  .course-modal-body { padding: 18px 22px 20px; font-size: 14px; line-height: 1.5; }
+  .course-modal-body h2 { font-size: 18px; padding-right: 28px; margin-bottom: 6px; }
+  .course-modal-body h3 { margin: 16px 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #777; }
+  .detail-summary { color: #555; }
+  .detail-note { border-left: 4px solid var(--ds-color); padding: 2px 0 2px 10px; margin-bottom: 8px; }
+  .detail-note p { margin-top: 2px; }
+  .detail-secondary { opacity: 0.85; }
+  .detail-secondary p { font-size: 13px; color: #555; }
   .repo-link:hover { background: #fff; text-decoration: underline; }
   .repo-link:focus-visible { outline: 2px solid #666; outline-offset: 2px; }
   .tag-ects       { background: #E8E8E8; color: var(--charcoal); border: 1px solid #C8C8C8; }
@@ -253,6 +285,16 @@
   .ds-taxonomy-btn:focus-visible { outline: 2px solid #666; outline-offset: 2px; }
   .ds-taxonomy-btn.active { border-color: #999; border-left-color: var(--ds-color); box-shadow: inset 0 0 0 1px #777; }
 
+  .ds-info { margin: -4px 0 10px; font-size: 12px; color: var(--charcoal); }
+  .ds-info summary { cursor: pointer; display: inline-block; color: #555; text-decoration: underline; text-underline-offset: 2px; }
+  .ds-info summary:hover { color: #000; }
+  .ds-info[open] { padding: 10px 12px; border: 1px solid #D8D8D8; border-radius: 4px; background: #FAFAFA; }
+  .ds-info-group h3 { margin: 10px 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #777; }
+  .ds-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+  .ds-info-item { background: #fff; border: 1px solid #E0E0E0; border-left: 4px solid var(--ds-color); border-radius: 3px; padding: 6px 9px; }
+  .ds-info-item p { margin-top: 3px; line-height: 1.4; }
+  .ds-info-examples { color: #666; font-size: 11px; }
+
   /* ── Print ── */
   @media print {
     :root { --ds-h: 22px; --ects-w: 27px; }
@@ -266,9 +308,10 @@
     .box-title-en { font-size: 7px; }
     .tag          { font-size: 6.5px; padding: 0px 3px; }
     .repo-link    { font-size: 6px; padding: 0 3px; }
+    .details-btn, .course-modal { display: none !important; }
     .sem-label-ds { font-size: 6.5px; }
     .ds-body      { font-size: 6.5px; padding: 3px 4px 4px; }
-    .ds-taxonomy-legend { display: none !important; }
+    .ds-taxonomy-legend, .ds-info { display: none !important; }
     .box-main     { padding: 4px 5px 3px; }
     .semester-heading { font-size: 7px; }
     .semester-heading strong { font-size: 9px; }
@@ -486,7 +529,7 @@
 <!-- /LEGEND:sdu --></div>
 
 <!-- DS-LEGEND:sdu -->
-<div class="ds-taxonomy-legend" aria-label="Filter by data science category"><button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" title="Show only courses with data science elements; bold black outlines identify them">Data Science</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-mathematics" aria-pressed="false" style="--ds-color:#7B61A8" onclick="toggleDSCategoryFilter(this)">Mathematics and statistics</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-computing" aria-pressed="false" style="--ds-color:#2878B5" onclick="toggleDSCategoryFilter(this)">Computing and programming</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-governance" aria-pressed="false" style="--ds-color:#6C757D" onclick="toggleDSCategoryFilter(this)">Data governance</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-handling" aria-pressed="false" style="--ds-color:#00A6A6" onclick="toggleDSCategoryFilter(this)">Data handling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-exploration" aria-pressed="false" style="--ds-color:#4E9F50" onclick="toggleDSCategoryFilter(this)">Exploration</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-analysis" aria-pressed="false" style="--ds-color:#F28E2B" onclick="toggleDSCategoryFilter(this)">Analysis and modelling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-machine-learning" aria-pressed="false" style="--ds-color:#D9534F" onclick="toggleDSCategoryFilter(this)">Machine learning and AI</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-visualization" aria-pressed="false" style="--ds-color:#B08D00" onclick="toggleDSCategoryFilter(this)">Visualization and reporting</button></div>
+<div class="ds-taxonomy-legend" aria-label="Filter by data science category"><button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" title="Show only courses with data science elements; bold black outlines identify them">Data Science</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-mathematics" aria-pressed="false" style="--ds-color:#7B61A8" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression." onclick="toggleDSCategoryFilter(this)">Mathematics and statistics</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-computing" aria-pressed="false" style="--ds-color:#2878B5" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools." onclick="toggleDSCategoryFilter(this)">Computing and programming</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-governance" aria-pressed="false" style="--ds-color:#6C757D" title="How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data." onclick="toggleDSCategoryFilter(this)">Data governance</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-handling" aria-pressed="false" style="--ds-color:#00A6A6" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly." onclick="toggleDSCategoryFilter(this)">Data handling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-exploration" aria-pressed="false" style="--ds-color:#4E9F50" title="Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis." onclick="toggleDSCategoryFilter(this)">Exploration</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-analysis" aria-pressed="false" style="--ds-color:#F28E2B" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning." onclick="toggleDSCategoryFilter(this)">Analysis and modelling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-machine-learning" aria-pressed="false" style="--ds-color:#D9534F" title="Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI." onclick="toggleDSCategoryFilter(this)">Machine learning and AI</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-visualization" aria-pressed="false" style="--ds-color:#B08D00" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached." onclick="toggleDSCategoryFilter(this)">Visualization and reporting</button></div><details class="ds-info"><summary>What do the categories mean?</summary><div class="ds-info-group"><h3>Foundations</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.</p><p class="ds-info-examples"><em>Examples:</em> Linearization, a degradation rate as a derivative, AUC as an integral, a dataset as a matrix, standard errors and confidence intervals, t-tests and ANOVA.</p></div><div class="ds-info-item" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.</p><p class="ds-info-examples"><em>Examples:</em> Organizing files and projects, writing and rerunning R scripts, reading error messages, finding help, using AI assistants critically when writing code.</p></div></div></div><div class="ds-info-group"><h3>Data workflow</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#6C757D"><strong>Data governance</strong><p>How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data.</p><p class="ds-info-examples"><em>Examples:</em> Tidy data structure, file naming, metadata and the FAIR principles, keeping raw data unchanged, secure storage, GDPR and anonymization.</p></div><div class="ds-info-item" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.</p><p class="ds-info-examples"><em>Examples:</em> Importing instrument output or spreadsheets, filtering and selecting, creating variables, converting units, joining tables, reshaping between wide and long format.</p></div><div class="ds-info-item" style="--ds-color:#4E9F50"><strong>Exploration</strong><p>Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis.</p><p class="ds-info-examples"><em>Examples:</em> Histograms, boxplots and scatter plots, summary tables by group, spotting outliers, checking assumptions such as normality or linearity.</p></div><div class="ds-info-item" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.</p><p class="ds-info-examples"><em>Examples:</em> t-tests and ANOVA, correlation, linear and nonlinear regression, confidence intervals on parameters, reaction and release kinetics, dose-response and pharmacokinetic models.</p></div><div class="ds-info-item" style="--ds-color:#D9534F"><strong>Machine learning and AI</strong><p>Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI.</p><p class="ds-info-examples"><em>Examples:</em> PCA, k-means and hierarchical clustering, random forests, training and test sets, cross-validation and overfitting, the basic ideas behind neural networks and LLMs.</p></div><div class="ds-info-item" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.</p><p class="ds-info-examples"><em>Examples:</em> Choosing the right plot type, figure design, showing uncertainty, reproducible reports that combine text, code and results (e.g. Quarto), posters and presentations.</p></div></div></div></details>
 <!-- /DS-LEGEND:sdu -->
 
 <h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 4 November 2026)</h1>
@@ -495,21 +538,22 @@
   <div class="semester-group">
     <div class="semester-heading"><span class="sem-tag">Semester</span><strong>1</strong><span>(Fall)</span></div>
     <div class="sem-row">
-    <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:5.0">
+    <div class="box box-has-ds box-ds-hi cat-quant has-details" style="--ects:5.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=mm556&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for MM556">MM556</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Matematik og statistik for farmaci</div>
         <div class="box-title-en">Mathematics and statistics for pharmacy</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics">Mathematics and statistics</span></div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for MM556">i</button></div>
       </div>
 
+      <template class="course-details"><h2>MM556: Mathematics and statistics for pharmacy</h2><p class="detail-summary">Builds the mathematics and statistics foundations that later data science work relies on.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The concepts behind the methods: functions and rates of change, calculus, differential equations, probability distributions and hypothesis testing.</p></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced and can be used for the course&#x27;s calculations, but its use is optional.</p></div><div class="detail-note detail-secondary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Simple models are applied to data and simulated, mostly as applications of the mathematics.</p></div></template>
     </div>
     <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:10.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa501&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA501">FA501</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-da">Farmaci grundkursus</div>
         <div class="box-title-en">Pharmacy introductory course</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-computing" data-ds-cat="ds-computing">Computing and programming</span><span class="ds-badge ds-handling" data-ds-cat="ds-handling">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization">Visualization and reporting</span></div>
+        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
     </div>
@@ -551,7 +595,7 @@
       <div class="box-main">
         <div class="box-title-da">Fysik for Biologi og Farmaci</div>
         <div class="box-title-en">Physics for Biology and Pharmacy</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics">Mathematics and statistics</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis">Analysis and modelling</span></div>
+        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div>
       </div>
 
     </div>
@@ -602,7 +646,7 @@
       <div class="box-main">
         <div class="box-title-da">Lægemiddelformulering og fremstilling A</div>
         <div class="box-title-en">Drug formulation and production A</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization">Visualization and reporting</span></div>
+        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
     </div>
@@ -629,7 +673,7 @@
       <div class="box-main">
         <div class="box-title-da">Farmaceutisk fysisk kemi</div>
         <div class="box-title-en">Pharmaceutical Physical Chemistry</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization">Visualization and reporting</span></div>
+        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
     </div>
@@ -653,7 +697,7 @@
       <div class="box-main">
         <div class="box-title-da">Lægemiddelformulering og fremstilling B</div>
         <div class="box-title-en">Drug formulation and production B</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization">Visualization and reporting</span></div>
+        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
     </div>
@@ -662,7 +706,7 @@
       <div class="box-main">
         <div class="box-title-da">Instrumentel farmaceutisk analyse</div>
         <div class="box-title-en">Instrumental pharmaceutical analysis</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics">Mathematics and statistics</span><span class="ds-badge ds-computing" data-ds-cat="ds-computing">Computing and programming</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis">Analysis and modelling</span></div>
+        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div>
       </div>
 
     </div>
@@ -695,7 +739,7 @@
       <div class="box-main">
         <div class="box-title-da">Lægemiddelformulering og fremstilling C</div>
         <div class="box-title-en">Drug formulation and production C</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization">Visualization and reporting</span></div>
+        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
     </div>
@@ -1074,6 +1118,33 @@
 </footer>
 
 </div><!-- /ucph-content -->
+
+<dialog class="course-modal" id="course-modal" aria-label="Course data science details">
+  <button type="button" class="course-modal-close" onclick="closeCourseDetails()" aria-label="Close">×</button>
+  <div class="course-modal-body" id="course-modal-body"></div>
+</dialog>
+
+<script>
+  function openCourseDetails(trigger) {
+    const box = trigger.closest('.box');
+    const template = box && box.querySelector('template.course-details');
+    if (!template) return;
+    const modal = document.getElementById('course-modal');
+    document.getElementById('course-modal-body').replaceChildren(template.content.cloneNode(true));
+    modal.showModal();
+  }
+  function closeCourseDetails() { document.getElementById('course-modal').close(); }
+  (function () {
+    const modal = document.getElementById('course-modal');
+    // A click on the backdrop targets the dialog itself.
+    modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
+    // Clicking a card with details opens them, unless a link or button was clicked.
+    document.addEventListener('click', e => {
+      const main = e.target.closest('.box.has-details .box-main');
+      if (main && !e.target.closest('a, button')) openCourseDetails(main);
+    });
+  })();
+</script>
 
 <script>
   // Course categories, data-science categories and the UCPH DS filter combine with AND.
