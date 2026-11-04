@@ -16,6 +16,18 @@ HTML_PATH = Path(__file__).parent / "index.html"
 SLUG_POOL = ["cat-quant", "cat-chem", "cat-bio", "cat-physio", "cat-form", "cat-practice"]
 COLOR_POOL = ["#DECBE4", "#B3CDE3", "#CCEBC5", "#FBB4AE", "#FED9A6", "#FFFFCC"]
 
+# Data-science category badges use a separate namespace from course-category filters.
+DS_CATEGORIES = {
+    "Mathematics and statistics": ("ds-mathematics", "#7B61A8"),
+    "Computing and programming": ("ds-computing", "#2878B5"),
+    "Data governance": ("ds-governance", "#6C757D"),
+    "Data handling": ("ds-handling", "#00A6A6"),
+    "Exploration": ("ds-exploration", "#4E9F50"),
+    "Analysis and modelling": ("ds-analysis", "#F28E2B"),
+    "Machine learning and AI": ("ds-machine-learning", "#D9534F"),
+    "Visualization and reporting": ("ds-visualization", "#B08D00"),
+}
+
 # Fixed order preserves the SDU category->colour assignment already established.
 SDU_CATEGORY_ORDER = [
     "Quantitative & Analytical Methods",
@@ -56,31 +68,20 @@ def fmt_ects(value):
     return f"{value}".replace(".", ",") + " ECTS"
 
 
-def fmt_ds_version(value):
-    if value is None or value == "":
-        return ""
-    if isinstance(value, str):
-        return f"DS {value}"
-    if float(value) == int(value):
-        return f"DS v{int(value)}"
-    return f"DS v{value}"
+def is_ds_v2_plus(value):
+    if value is None or value == "" or isinstance(value, str):
+        return False
+    return float(value) >= 2
 
 
-def fmt_ds_tooltip(value):
+def parse_categories(value, code):
     if value is None or value == "":
-        return ""
-    if isinstance(value, str):
-        return "Data science upgrade version not yet determined."
-    version = float(value)
-    if version == 1:
-        return "Initial data science upgrade."
-    if version == 2:
-        return "Second iteration of the data science upgrade."
-    if version == 3:
-        return "Final version."
-    if version > 2:
-        return "Iterative refinement of the data science upgrade."
-    return "Data science upgrade version."
+        return []
+    categories = [category.strip() for category in str(value).split(";") if category.strip()]
+    unknown = [category for category in categories if category not in DS_CATEGORIES]
+    if unknown:
+        raise ValueError(f"Unknown data-science category for {code}: {', '.join(unknown)}")
+    return categories
 
 
 def load_courses(sheet_name):
@@ -88,6 +89,9 @@ def load_courses(sheet_name):
     ws = wb[sheet_name]
     headers = [c.value for c in ws[1]]
     idx = {h: i for i, h in enumerate(headers)}
+    has_ds_category_mapping = (
+        "DS Primary Categories" in idx and "DS Secondary Categories" in idx
+    )
 
     courses = []
     category_order = []
@@ -110,13 +114,16 @@ def load_courses(sheet_name):
             "category": category,
             "ds_version": row[idx["DS Version"]],
             "ds_desc": row[idx["DS Elements"]] or "",
+            "github": (row[idx["GitHub Repository"]] or "") if "GitHub Repository" in idx else "",
+            "ds_primary": parse_categories(row[idx["DS Primary Categories"]], code)
+            if has_ds_category_mapping else [],
         })
 
     courses.sort(key=lambda c: c["semester"])
     by_semester = {}
     for c in courses:
         by_semester.setdefault(c["semester"], []).append(c)
-    return by_semester, category_order
+    return by_semester, category_order, has_ds_category_mapping
 
 
 def build_category_map(category_order):
@@ -126,58 +133,112 @@ def build_category_map(category_order):
     return order, slug_map, color_map
 
 
-URL_RE = re.compile(r"(https?://[^\s)]+)")
+URL_RE = re.compile(
+    r"(?P<label>[^()<>]*?)\s*\((?P<label_url>https?://[^\s)]+)\)"
+    r"|(?P<bare_url>https?://[^\s)]+)"
+)
 
 
 def linkify(escaped_text):
-    """Turn bare URLs in already-HTML-escaped text into real links."""
-    return URL_RE.sub(r'<a href="\1" target="_blank">\1</a>', escaped_text)
+    """Link parenthesized URLs using their preceding text as the label."""
+    def replace_url(match):
+        label = match.group("label")
+        url = match.group("label_url")
+        if label is not None:
+            return (
+                f'<a href="{url}" target="_blank" rel="noopener">'
+                f'{label.strip()}</a>'
+            )
+        url = match.group("bare_url")
+        return f'<a href="{url}" target="_blank" rel="noopener">{url}</a>'
+
+    return URL_RE.sub(replace_url, escaped_text)
 
 
-def is_ds_v2_plus(value):
-    """True for numeric DS versions >= 2 (excludes blanks and non-numeric placeholders like 'TBD')."""
-    if value is None or value == "" or isinstance(value, str):
-        return False
-    return float(value) >= 2
+def render_ds_badges(categories):
+    if not categories:
+        return ""
+    category_order = {category: index for index, category in enumerate(DS_CATEGORIES)}
+    badges = "".join(
+        f'<span class="ds-badge {DS_CATEGORIES[category][0]}" '
+        f'data-ds-cat="{DS_CATEGORIES[category][0]}">'
+        f'{html.escape(category)}</span>'
+        for category in sorted(categories, key=category_order.__getitem__)
+    )
+    return (
+        f'<div class="ds-category-list" aria-label="Primary data-science categories">'
+        f'{badges}</div>'
+    )
 
 
-def render_box(course, slug_map):
+def render_box(course, slug_map, show_ds_categories=False):
     code = html.escape(str(course["code"])) if course["code"] is not None else ""
     title_da = html.escape(course["title_da"])
     title_en = html.escape(course["title_en"])
     ects = fmt_ects(course["ects"])
     webpage = html.escape(str(course["webpage"]), quote=True)
     ds_desc = linkify(html.escape(course["ds_desc"]))
-    link_label = "Elective catalogue" if course["code"] == "—" else "Course page"
-
-    is_ds_hi = is_ds_v2_plus(course["ds_version"])
-    version_label = fmt_ds_version(course["ds_version"])
-    version_tooltip = html.escape(fmt_ds_tooltip(course["ds_version"]), quote=True)
-    version_tag = (
-        f'<span class="tag tag-new" title="{version_tooltip}">{html.escape(version_label)}</span>'
-        if version_label and is_ds_hi else ""
+    has_primary_categories = bool(course["ds_primary"])
+    ds_content = (
+        render_ds_badges(course["ds_primary"])
+        if show_ds_categories and has_primary_categories
+        else ds_desc
+    )
+    has_ds_content = bool(
+        course["ds_primary"] or course["ds_desc"] or is_ds_v2_plus(course["ds_version"])
     )
 
     cat_slug = slug_map.get(course["category"], "")
-    ds_hi_class = " box-ds-hi" if is_ds_hi else ""
-    box_class = f"box{ds_hi_class} {cat_slug}" if cat_slug else f"box{ds_hi_class}"
+    ds_content_class = " box-has-ds box-ds-hi" if has_ds_content else ""
+    box_class = f"box{ds_content_class} {cat_slug}" if cat_slug else f"box{ds_content_class}"
     bar_class = f"box-cat-bar {cat_slug}" if cat_slug else "box-cat-bar"
     ects_value = float(course["ects"]) if course["ects"] else 1
+    code_link = (
+        f'<a class="cat-code-link" href="{webpage}" target="_blank" rel="noopener" '
+        f'aria-label="Open course page for {code}">{code}</a>'
+        if webpage != "#" and code
+        else code
+    )
+    github = str(course["github"]).strip()
+    github_link = (
+        f'<a class="repo-link" href="{html.escape(github, quote=True)}" target="_blank" '
+        f'rel="noopener" title="Open public course materials on GitHub" '
+        f'aria-label="Open public GitHub materials for {code}">GitHub</a>'
+        if github.startswith("https://")
+        else ""
+    )
+    ds_section = (
+        ""
+        if show_ds_categories
+        else f'      <div class="box-ds"><div class="ds-body">{ds_content}</div></div>'
+    )
+    ds_main_content = ""
+    if show_ds_categories and has_primary_categories:
+        ds_main_content = f"        {ds_content}"
+    elif show_ds_categories and ds_content:
+        ds_main_content = f'        <div class="ds-summary">{ds_content}</div>'
 
     return f"""    <div class="{box_class}" style="--ects:{ects_value}">
-      <div class="{bar_class}"><span class="cat-code">{code}</span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span>{version_tag}</div></div>
+      <div class="{bar_class}"><span class="cat-code">{code_link}</span><div class="box-meta">{github_link}<span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span></div></div>
       <div class="box-main">
         <div class="box-title-da">{title_da}</div>
         <div class="box-title-en">{title_en}</div>
-        <a class="box-link" href="{webpage}" target="_blank">&#8599; {link_label}</a>
+{ds_main_content}
       </div>
-      <div class="box-ds"><div class="ds-body">{ds_desc}</div></div>
+{ds_section}
     </div>"""
 
 
-def render_semester(sem_num, courses, slug_map):
-    season = "Efterår" if sem_num % 2 == 1 else "Forår"
-    boxes = [render_box(c, slug_map) for c in courses]
+def render_semester(sem_num, courses, slug_map, show_ds_categories=False):
+    season = "Fall" if sem_num % 2 == 1 else "Spring"
+    boxes = [render_box(c, slug_map, show_ds_categories) for c in courses]
+    if show_ds_categories:
+        return f"""  <div class="semester-group">
+    <div class="semester-heading"><span class="sem-tag">Semester</span><strong>{sem_num}</strong><span>({season})</span></div>
+    <div class="sem-row">
+{chr(10).join(boxes)}
+    </div>
+  </div>"""
 
     return f"""  <div class="sem-row">
     <div class="sem-label">
@@ -188,8 +249,11 @@ def render_semester(sem_num, courses, slug_map):
   </div>"""
 
 
-def render_grid(by_semester, slug_map):
-    rows = [render_semester(sem, by_semester.get(sem, []), slug_map) for sem in sorted(by_semester)]
+def render_grid(by_semester, slug_map, show_ds_categories=False):
+    rows = [
+        render_semester(sem, by_semester.get(sem, []), slug_map, show_ds_categories)
+        for sem in sorted(by_semester)
+    ]
     return "\n\n".join(rows)
 
 
@@ -200,10 +264,28 @@ def render_legend(category_order, slug_map, color_map):
         color = color_map[cat]
         name = html.escape(cat)
         buttons.append(
-            f'  <button class="legend-btn" data-cat="{slug}" style="background:{color}" '
+            f'  <button class="legend-btn" data-cat="{slug}" aria-pressed="false" style="background:{color}" '
             f'onclick="toggleCategoryFilter(this)">{name}</button>'
         )
     return "\n".join(buttons)
+
+
+def render_ds_legend():
+    items = []
+    for category, (slug, color) in DS_CATEGORIES.items():
+        items.append(
+            f'<button type="button" class="ds-taxonomy-btn" data-ds-cat="{slug}" '
+            f'aria-pressed="false" style="--ds-color:{color}" '
+            f'onclick="toggleDSCategoryFilter(this)">{html.escape(category)}</button>'
+        )
+    return (
+        '<div class="ds-taxonomy-legend" aria-label="Filter by data science category">'
+        '<button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" '
+        'title="Show only courses with data science elements; bold black outlines identify them">'
+        'Data Science</button>'
+        + "".join(items)
+        + '</div>'
+    )
 
 
 def replace_between(text, start_marker, end_marker, new_content):
@@ -219,15 +301,20 @@ def main():
 
     total_courses = 0
     for uni in UNIVERSITIES:
-        by_semester, detected_order = load_courses(uni["sheet"])
+        by_semester, detected_order, has_ds_category_mapping = load_courses(uni["sheet"])
         category_order = uni["category_order"] or detected_order
         category_order, slug_map, color_map = build_category_map(category_order)
 
-        grid_html = render_grid(by_semester, slug_map)
+        grid_html = render_grid(by_semester, slug_map, has_ds_category_mapping)
         legend_html = render_legend(category_order, slug_map, color_map)
 
         text = replace_between(text, f"<!-- GRID:{uni['key']} -->", f"<!-- /GRID:{uni['key']} -->", grid_html)
         text = replace_between(text, f"<!-- LEGEND:{uni['key']} -->", f"<!-- /LEGEND:{uni['key']} -->", legend_html)
+        if has_ds_category_mapping:
+            text = replace_between(
+                text, f"<!-- DS-LEGEND:{uni['key']} -->",
+                f"<!-- /DS-LEGEND:{uni['key']} -->", render_ds_legend()
+            )
 
         headline = uni["headline_fmt"].format(date=last_updated)
         text = uni["headline_pattern"].sub(headline, text)
