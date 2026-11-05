@@ -126,7 +126,7 @@ def fmt_ects(value):
         return ""
     if float(value) == int(value):
         return f"{int(value)} ECTS"
-    return f"{value}".replace(".", ",") + " ECTS"
+    return f"{float(value):g} ECTS"
 
 
 def is_ds_v2_plus(value):
@@ -146,17 +146,64 @@ def parse_categories(value, code):
 
 
 def parse_notes(value):
-    """Parse lines of 'Category: note' into (category, note) pairs."""
+    """Parse category-prefixed notes, including indented Markdown-style content."""
     notes = []
+    category = None
+    content = []
+
+    def save_note():
+        if category is not None:
+            notes.append((category, "\n".join(content).strip()))
+
     for line in str(value or "").splitlines():
-        category, _, note = line.partition(":")
-        category, note = category.strip(), note.strip()
-        if not category:
-            continue
-        if category not in DS_CATEGORIES:
-            raise ValueError(f"Unknown data-science category in course details: {category}")
-        notes.append((category, note))
+        candidate, separator, note = line.partition(":")
+        candidate = candidate.strip()
+        if separator and candidate in DS_CATEGORIES:
+            save_note()
+            category = candidate
+            content = [note.lstrip()]
+        elif category is not None:
+            content.append(line)
+        elif line.strip():
+            raise ValueError(f"Course detail content must start with a known category: {line}")
+    save_note()
     return notes
+
+
+def render_note_body(note):
+    """Render plain text paragraphs, bold headings, and unordered lists."""
+    blocks = []
+    paragraph = []
+    list_items = []
+
+    def save_paragraph():
+        if paragraph:
+            blocks.append(f'<p>{" ".join(paragraph)}</p>')
+            paragraph.clear()
+
+    def save_list():
+        if list_items:
+            blocks.append(f'<ul>{"".join(list_items)}</ul>')
+            list_items.clear()
+
+    for line in note.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            save_paragraph()
+            save_list()
+        elif stripped.startswith("- "):
+            save_paragraph()
+            list_items.append(f"<li>{html.escape(stripped[2:])}</li>")
+        elif stripped.startswith("**") and stripped.endswith("**"):
+            save_paragraph()
+            save_list()
+            blocks.append(f"<h4>{html.escape(stripped[2:-2])}</h4>")
+        else:
+            save_list()
+            paragraph.append(html.escape(stripped))
+    save_paragraph()
+    save_list()
+    return "".join(blocks)
 
 
 def load_details(wb, sheet_name):
@@ -184,7 +231,7 @@ def render_details_template(course, details):
     def note_items(notes, css_class):
         return "".join(
             f'<div class="detail-note {css_class}" style="--ds-color:{DS_CATEGORIES[cat][1]}">'
-            f'<strong>{html.escape(cat)}</strong><p>{html.escape(note)}</p></div>'
+            f'<strong>{html.escape(cat)}</strong>{render_note_body(note)}</div>'
             for cat, note in notes
         )
 
@@ -360,8 +407,8 @@ def render_box(course, slug_map, show_ds_categories=False):
     return f"""    <div class="{box_class}" style="--ects:{ects_value}">
       <div class="{bar_class}"><span class="cat-code">{code_link}</span><div class="box-meta">{github_link}<span class="tag tag-ects" title="Course size in ECTS credits">{ects}</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">{title_da}</div>
         <div class="box-title-en">{title_en}</div>
+        <div class="box-title-da">{title_da}</div>
 {ds_main_content}
       </div>
 {ds_section}{details_template}

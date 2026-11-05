@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Course overview – Bachelor of Pharmacy (SDU, from autumn 2024). Shows data science elements across all semesters.">
-<title>Bachelor of Pharmacy – Course Overview (SDU, last updated 4 November 2026)</title>
+<title>Bachelor of Pharmacy – Course Overview (SDU, last updated 5 November 2026)</title>
 <style>
   :root {
     --ds-h: 40px;
-    --ects-w: 41px; /* absolute px-per-ECTS so box width is comparable across all rows */
+    --ects-w: 41px; /* minimum px-per-ECTS; rows scale to fit their available width */
     /* CPDSE palette */
     --forest:  #3C5E3E;
     --sage:    #5F7D61;
@@ -117,10 +117,9 @@
   }
 
   /* ── Course box ── */
-  /* each box sets --ects inline; width is an absolute px-per-ECTS scale so it's comparable across every row */
+  /* Each row sets --ects-w so card widths remain proportional after filtering. */
   .box {
-    /* basis is the minimum width; spare row width is shared in proportion to ECTS */
-    flex: var(--ects, 1) 0 calc(var(--ects-w) * var(--ects, 1));
+    flex: 0 0 calc(var(--ects-w) * var(--ects, 1));
     border: 1px solid #D8D8D8;
     display: flex;
     flex-direction: column;
@@ -164,8 +163,8 @@
     display: flex;
     flex-direction: column;
   }
-  .box-title-da   { font-size: 16px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
-  .box-title-en   { font-size: 14px; font-style: italic; color: #6B6B6B; line-height: 1.3; margin-bottom: 4px; }
+  .box-title-en   { font-size: 16px; font-weight: bold; line-height: 1.3; margin-bottom: 2px; color: var(--charcoal); }
+  .box-title-da   { font-size: 14px; font-style: italic; color: #6B6B6B; line-height: 1.3; margin-bottom: 4px; }
   .box-meta       { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 3px; }
 
   .tag            { font-size: 13px; font-weight: bold; padding: 1px 4px; border-radius: 2px; line-height: 1.5; white-space: nowrap; }
@@ -203,7 +202,10 @@
   .course-modal-body h3 { margin: 16px 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #777; }
   .detail-summary { color: #555; }
   .detail-note { border-left: 4px solid var(--ds-color); padding: 2px 0 2px 10px; margin-bottom: 8px; }
-  .detail-note p { margin-top: 2px; }
+  .detail-note p { margin: 5px 0 8px; }
+  .detail-note h4 { margin: 10px 0 2px; font-size: 14px; }
+  .detail-note ul { margin: 2px 0 10px; padding-left: 20px; }
+  .detail-note li { padding-left: 2px; margin: 2px 0; }
   .detail-secondary { opacity: 0.85; }
   .detail-secondary p { font-size: 13px; color: #555; }
   .repo-link:hover { background: #fff; text-decoration: underline; }
@@ -304,8 +306,8 @@
     .sem-row { gap: 2px; }
     .sem-label { flex-basis: 60px; }
     .box-cat-bar  { font-size: 9px; padding: 3px 5px; }
-    .box-title-da { font-size: 8.5px; }
-    .box-title-en { font-size: 7px; }
+    .box-title-en { font-size: 8.5px; }
+    .box-title-da { font-size: 7px; }
     .tag          { font-size: 6.5px; padding: 0px 3px; }
     .repo-link    { font-size: 6px; padding: 0 3px; }
     .details-btn, .course-modal { display: none !important; }
@@ -514,7 +516,7 @@
     <img class="uni-logo" src="assets/SDU_logo.png" alt="University of Southern Denmark logo">
   </div>
   <div class="page-header-center">
-    <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, last updated 4 November 2026)</div>
+    <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, last updated 5 November 2026)</div>
   </div>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
 </header>
@@ -532,7 +534,7 @@
 <div class="ds-taxonomy-legend" aria-label="Filter by data science category"><button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" title="Show only courses with data science elements; bold black outlines identify them">Data Science</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-mathematics" aria-pressed="false" style="--ds-color:#7B61A8" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression." onclick="toggleDSCategoryFilter(this)">Mathematics and statistics</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-computing" aria-pressed="false" style="--ds-color:#2878B5" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools." onclick="toggleDSCategoryFilter(this)">Computing and programming</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-governance" aria-pressed="false" style="--ds-color:#6C757D" title="How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data." onclick="toggleDSCategoryFilter(this)">Data governance</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-handling" aria-pressed="false" style="--ds-color:#00A6A6" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly." onclick="toggleDSCategoryFilter(this)">Data handling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-exploration" aria-pressed="false" style="--ds-color:#4E9F50" title="Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis." onclick="toggleDSCategoryFilter(this)">Exploration</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-analysis" aria-pressed="false" style="--ds-color:#F28E2B" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning." onclick="toggleDSCategoryFilter(this)">Analysis and modelling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-machine-learning" aria-pressed="false" style="--ds-color:#D9534F" title="Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI." onclick="toggleDSCategoryFilter(this)">Machine learning and AI</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-visualization" aria-pressed="false" style="--ds-color:#B08D00" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached." onclick="toggleDSCategoryFilter(this)">Visualization and reporting</button></div><details class="ds-info"><summary>What do the categories mean?</summary><div class="ds-info-group"><h3>Foundations</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.</p><p class="ds-info-examples"><em>Examples:</em> Linearization, a degradation rate as a derivative, AUC as an integral, a dataset as a matrix, standard errors and confidence intervals, t-tests and ANOVA.</p></div><div class="ds-info-item" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.</p><p class="ds-info-examples"><em>Examples:</em> Organizing files and projects, writing and rerunning R scripts, reading error messages, finding help, using AI assistants critically when writing code.</p></div></div></div><div class="ds-info-group"><h3>Data workflow</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#6C757D"><strong>Data governance</strong><p>How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data.</p><p class="ds-info-examples"><em>Examples:</em> Tidy data structure, file naming, metadata and the FAIR principles, keeping raw data unchanged, secure storage, GDPR and anonymization.</p></div><div class="ds-info-item" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.</p><p class="ds-info-examples"><em>Examples:</em> Importing instrument output or spreadsheets, filtering and selecting, creating variables, converting units, joining tables, reshaping between wide and long format.</p></div><div class="ds-info-item" style="--ds-color:#4E9F50"><strong>Exploration</strong><p>Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis.</p><p class="ds-info-examples"><em>Examples:</em> Histograms, boxplots and scatter plots, summary tables by group, spotting outliers, checking assumptions such as normality or linearity.</p></div><div class="ds-info-item" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.</p><p class="ds-info-examples"><em>Examples:</em> t-tests and ANOVA, correlation, linear and nonlinear regression, confidence intervals on parameters, reaction and release kinetics, dose-response and pharmacokinetic models.</p></div><div class="ds-info-item" style="--ds-color:#D9534F"><strong>Machine learning and AI</strong><p>Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI.</p><p class="ds-info-examples"><em>Examples:</em> PCA, k-means and hierarchical clustering, random forests, training and test sets, cross-validation and overfitting, the basic ideas behind neural networks and LLMs.</p></div><div class="ds-info-item" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.</p><p class="ds-info-examples"><em>Examples:</em> Choosing the right plot type, figure design, showing uncertainty, reproducible reports that combine text, code and results (e.g. Quarto), posters and presentations.</p></div></div></div></details>
 <!-- /DS-LEGEND:sdu -->
 
-<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 4 November 2026)</h1>
+<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 5 November 2026)</h1>
 
 <div class="grid"><!-- GRID:sdu -->
   <div class="semester-group">
@@ -541,18 +543,18 @@
     <div class="box box-has-ds box-ds-hi cat-quant has-details" style="--ects:5.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=mm556&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for MM556">MM556</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Matematik og statistik for farmaci</div>
         <div class="box-title-en">Mathematics and statistics for pharmacy</div>
+        <div class="box-title-da">Matematik og statistik for farmaci</div>
         <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for MM556">i</button></div>
       </div>
 
-      <template class="course-details"><h2>MM556: Mathematics and statistics for pharmacy</h2><p class="detail-summary">Builds the mathematics and statistics foundations that later data science work relies on.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The concepts behind the methods: functions and rates of change, calculus, differential equations, probability distributions and hypothesis testing.</p></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced and can be used for the course&#x27;s calculations, but its use is optional.</p></div><div class="detail-note detail-secondary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Simple models are applied to data and simulated, mostly as applications of the mathematics.</p></div></template>
+      <template class="course-details"><h2>MM556: Mathematics and statistics for pharmacy</h2><p class="detail-summary">MM556 is the first-semester mathematics and statistics course for pharmacy students. It covers the calculus and statistics that later courses build on, from functions and derivatives to integrals, differential equations and hypothesis testing, mostly illustrated with pharmaceutical and life science examples. The course has no dedicated data science material. Data science runs through it as the mathematical and statistical foundation for later work, with R introduced early as a tool for calculations and plots.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The core of the course, and what the exams, quizzes and group exercises assess. Most of the time goes to mathematics, with statistics in the final weeks.</p><h4>Mathematics</h4><ul><li>Units and dimensional analysis</li><li>Functions and their properties: linear, exponential, logarithmic, power, periodic and sigmoid functions, composition and inverses</li><li>Least-squares fitting of a line, and linearization with log and log-log transforms</li><li>Sequences and recursion: fixed points, steady states and limits</li><li>Derivatives as rates of change: maxima and minima, concavity and Taylor approximation</li><li>Integrals as accumulated change and area under a curve: numerical integration (midpoint and trapezoid rules), the fundamental theorem of calculus, substitution and integration by parts</li><li>Differential equations: first-order models, separation of variables and Euler&#x27;s method</li></ul><h4>Statistics</h4><ul><li>Descriptive statistics: mean, median, variance, standard deviation and histograms</li><li>Covariance and correlation, and correlation versus causation</li><li>Probability: random variables, expected value and variance, and the binomial, normal and exponential distributions</li><li>Hypothesis testing: t-test, chi-squared test, ANOVA and p-values</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced early with a worksheet and a quiz, and is then available throughout as a calculator and plotting tool, alongside solving problems by hand.</p><ul><li>R basics: calculations, variables, vectors and functions</li><li>Data frames, basic dplyr, and reading and writing CSV files</li><li>Plotting with ggplot2</li><li>Implementing numerical methods: numerical integration, Euler&#x27;s method and recursive sequences</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Students fit models to small datasets and simulate how models behave, while most of the modelling in the course is about the mathematics behind them.</p><ul><li>Linear regression and prediction</li><li>Fitting exponential and power-law models by linearization</li><li>Simulating discrete-time models towards a steady state</li><li>Numerical solutions of differential equations</li><li>Numerical integration of measured data</li></ul></div></template>
     </div>
     <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:10.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa501&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA501">FA501</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaci grundkursus</div>
         <div class="box-title-en">Pharmacy introductory course</div>
+        <div class="box-title-da">Farmaci grundkursus</div>
         <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
@@ -560,8 +562,8 @@
     <div class="box cat-chem" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=180287&amp;lang=da&amp;listid=" target="_blank" rel="noopener" aria-label="Open course page for KE557">KE557</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Almen kemi</div>
         <div class="box-title-en">General Chemistry</div>
+        <div class="box-title-da">Almen kemi</div>
 
       </div>
 
@@ -569,8 +571,8 @@
     <div class="box cat-chem" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=168734&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for KE558">KE558</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Indledende organisk kemi</div>
         <div class="box-title-en">Fundamental Organic Chemistry</div>
+        <div class="box-title-da">Indledende organisk kemi</div>
 
       </div>
 
@@ -578,8 +580,8 @@
     <div class="box cat-chem" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=197532&amp;lang=da&amp;listid=" target="_blank" rel="noopener" aria-label="Open course page for KE521">KE521</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Grundstoffernes Kemi</div>
         <div class="box-title-en">Chemistry of the elements</div>
+        <div class="box-title-da">Grundstoffernes Kemi</div>
 
       </div>
 
@@ -593,8 +595,8 @@
     <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:5.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fy528&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FY528">FY528</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Fysik for Biologi og Farmaci</div>
         <div class="box-title-en">Physics for Biology and Pharmacy</div>
+        <div class="box-title-da">Fysik for Biologi og Farmaci</div>
         <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div>
       </div>
 
@@ -602,8 +604,8 @@
     <div class="box cat-bio" style="--ects:10.0">
       <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa508&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA508">FA508</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaceutisk Biologi</div>
         <div class="box-title-en">Pharmaceutical Biology</div>
+        <div class="box-title-da">Farmaceutisk Biologi</div>
 
       </div>
 
@@ -611,8 +613,8 @@
     <div class="box cat-bio" style="--ects:5.0">
       <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bmb528&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for BMB528">BMB528</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaceutisk Mikrobiologi</div>
         <div class="box-title-en">Pharmaceutical Microbiology</div>
+        <div class="box-title-da">Farmaceutisk Mikrobiologi</div>
 
       </div>
 
@@ -620,8 +622,8 @@
     <div class="box" style="--ects:10.0">
       <div class="box-cat-bar"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=ff501&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FF501">FF501</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Førsteårsprojekt</div>
         <div class="box-title-en">First year project</div>
+        <div class="box-title-da">Førsteårsprojekt</div>
 
       </div>
 
@@ -633,19 +635,19 @@
     <div class="semester-heading"><span class="sem-tag">Semester</span><strong>3</strong><span>(Fall)</span></div>
     <div class="sem-row">
     <div class="box cat-physio" style="--ects:7.5">
-      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su520&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for SU520">SU520</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su520&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for SU520">SU520</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 1</div>
         <div class="box-title-en">Physiology and pharmacology for pharmacists - Module 1</div>
+        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 1</div>
 
       </div>
 
     </div>
     <div class="box box-has-ds box-ds-hi cat-form" style="--ects:7.5">
-      <div class="box-cat-bar cat-form"><span class="cat-code"><a class="cat-code-link" href="http://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa511&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA511">FA511</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-form"><span class="cat-code"><a class="cat-code-link" href="http://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa511&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA511">FA511</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Lægemiddelformulering og fremstilling A</div>
         <div class="box-title-en">Drug formulation and production A</div>
+        <div class="box-title-da">Lægemiddelformulering og fremstilling A</div>
         <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
@@ -653,8 +655,8 @@
     <div class="box cat-bio" style="--ects:5.0">
       <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bmb530&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for BMB530">BMB530</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Grundlæggende biokemi</div>
         <div class="box-title-en">Basic Biochemistry</div>
+        <div class="box-title-da">Grundlæggende biokemi</div>
 
       </div>
 
@@ -662,8 +664,8 @@
     <div class="box cat-bio" style="--ects:5.0">
       <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bmb504&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for BMB504">BMB504</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Fundamental Molekylær Biologi</div>
         <div class="box-title-en">Fundamental Molecular Biology</div>
+        <div class="box-title-da">Fundamental Molekylær Biologi</div>
 
       </div>
 
@@ -671,8 +673,8 @@
     <div class="box box-has-ds box-ds-hi cat-chem" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=202312&amp;lang=da&amp;listid=" target="_blank" rel="noopener" aria-label="Open course page for FA515">FA515</a></span><div class="box-meta"><a class="repo-link" href="https://github.com/CPDSE-EDUX/SDU-BSc-FA515-Pharmaceutical-Physical-Chemistry" target="_blank" rel="noopener" title="Open public course materials on GitHub" aria-label="Open public GitHub materials for FA515">GitHub</a><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaceutisk fysisk kemi</div>
         <div class="box-title-en">Pharmaceutical Physical Chemistry</div>
+        <div class="box-title-da">Farmaceutisk fysisk kemi</div>
         <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
@@ -686,8 +688,8 @@
     <div class="box cat-physio" style="--ects:5.0">
       <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su517&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for SU517">SU517</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 2</div>
         <div class="box-title-en">Physiology and pharmacology for pharmacists – Module 2</div>
+        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 2</div>
 
       </div>
 
@@ -695,8 +697,8 @@
     <div class="box box-has-ds box-ds-hi cat-form" style="--ects:5.0">
       <div class="box-cat-bar cat-form"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa503&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA503">FA503</a></span><div class="box-meta"><a class="repo-link" href="https://github.com/CPDSE-EDUX/SDU-BSc-FA503-Drug-Formulation-and-Production-B" target="_blank" rel="noopener" title="Open public course materials on GitHub" aria-label="Open public GitHub materials for FA503">GitHub</a><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Lægemiddelformulering og fremstilling B</div>
         <div class="box-title-en">Drug formulation and production B</div>
+        <div class="box-title-da">Lægemiddelformulering og fremstilling B</div>
         <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
       </div>
 
@@ -704,8 +706,8 @@
     <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:10.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa507&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA507">FA507</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Instrumentel farmaceutisk analyse</div>
         <div class="box-title-en">Instrumental pharmaceutical analysis</div>
+        <div class="box-title-da">Instrumentel farmaceutisk analyse</div>
         <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div>
       </div>
 
@@ -713,8 +715,8 @@
     <div class="box cat-chem" style="--ects:10.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=ke505&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for KE505">KE505</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Organisk Kemi</div>
         <div class="box-title-en">Organic chemistry</div>
+        <div class="box-title-da">Organisk Kemi</div>
 
       </div>
 
@@ -728,26 +730,27 @@
     <div class="box cat-physio" style="--ects:5.0">
       <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su518&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for SU518">SU518</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter – Modul 3</div>
         <div class="box-title-en">Physiology and pharmacology for pharmacists – Module 3</div>
+        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter – Modul 3</div>
 
       </div>
 
     </div>
-    <div class="box box-has-ds box-ds-hi cat-form" style="--ects:5.0">
+    <div class="box box-has-ds box-ds-hi cat-form has-details" style="--ects:5.0">
       <div class="box-cat-bar cat-form"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa504&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA504">FA504</a></span><div class="box-meta"><a class="repo-link" href="https://github.com/CPDSE-EDUX/SDU-BSc-FA504-Drug-Formulation-and-Production-C" target="_blank" rel="noopener" title="Open public course materials on GitHub" aria-label="Open public GitHub materials for FA504">GitHub</a><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Lægemiddelformulering og fremstilling C</div>
         <div class="box-title-en">Drug formulation and production C</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
+        <div class="box-title-da">Lægemiddelformulering og fremstilling C</div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for FA504">i</button></div>
       </div>
 
+      <template class="course-details"><h2>FA504: Drug formulation and production C</h2><p class="detail-summary">FA504 is a BSc Pharmacy course on how drugs are formulated, manufactured and evaluated. It covers drug absorption and permeability, preformulation, drug release and stability, and the choice of dosage form. Data science is found in the course&#x27;s exercise class and lab exercises. Students analyse data from their own experiments in R, fit simple models to the data, and report the results in a reproducible scientific report written in Quarto.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Each data analysis ends in fitting a simple model with physically meaningful parameters, and these parameters are the main results students report.</p><ul><li>Linear regression: slope, intercept and R², and when a linear model is reasonable</li><li>Linearizing models before fitting, e.g. first-order kinetics on a log scale</li><li>Fitting only the linear part of a curve and deriving parameters from it</li><li>Temperature dependence of a rate constant (Arrhenius) and prediction at new temperatures</li><li>Deriving secondary parameters such as shelf life and permeability, with careful unit conversion</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>The scientific report is the course&#x27;s assessment, so communicating results clearly is a main focus.</p><ul><li>Reproducible reports in Quarto that combine data processing, text and results</li><li>Scientific report structure, with worked calculation examples in the methods</li><li>Figures with clear labels and units, and fitted lines only when they follow from theory</li><li>Choosing a figure or a table for each result, without showing results twice</li><li>Captions, cross-references, numbered equations and citations</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Students prepare their own lab data in every exercise, using a data structure that is set up for them.</p><ul><li>Tidy data in a given spreadsheet template, imported into R</li><li>Creating and transforming variables, e.g. dilution corrections and unit conversions</li><li>Grouped and cumulative calculations, e.g. correcting for sample removal over time</li><li>Filtering and selecting data</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is the working tool throughout, with students completing prepared code.</p><ul><li>Working in RStudio projects with an organized folder for each report</li><li>Building an analysis step by step with tidyverse functions</li><li>Reproducible workflows that go from raw data to finished report</li></ul></div></template>
     </div>
     <div class="box cat-bio" style="--ects:5.0">
       <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=209977&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for BB555">BB555</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Toksikologi</div>
         <div class="box-title-en">Toxicology</div>
+        <div class="box-title-da">Toksikologi</div>
 
       </div>
 
@@ -755,8 +758,8 @@
     <div class="box box-has-ds box-ds-hi cat-practice" style="--ects:5.0">
       <div class="box-cat-bar cat-practice"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su511&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for SU511">SU511</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Samfundsfarmaci</div>
         <div class="box-title-en">Social pharmacy</div>
+        <div class="box-title-da">Samfundsfarmaci</div>
 
       </div>
 
@@ -764,8 +767,8 @@
     <div class="box cat-chem" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa505&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA505">FA505</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Naturstofkemi og farmakognosi</div>
         <div class="box-title-en">Natural Products Chemistry and Pharmacognosy</div>
+        <div class="box-title-da">Naturstofkemi og farmakognosi</div>
 
       </div>
 
@@ -773,8 +776,8 @@
     <div class="box box-has-ds box-ds-hi" style="--ects:5.0">
       <div class="box-cat-bar"><span class="cat-code"><a class="cat-code-link" href="https://www.sdu.dk/da/uddannelse/bachelor/farmaci/opbygning" target="_blank" rel="noopener" aria-label="Open course page for Valgfag">Valgfag</a></span><div class="box-meta"><a class="repo-link" href="https://github.com/CPDSE-EDUX/SDU-BSc-FA516-Chemical-and-Pharmaceutical-Data-Science" target="_blank" rel="noopener" title="Open public course materials on GitHub" aria-label="Open public GitHub materials for Valgfag">GitHub</a><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Konstituerende valgfag</div>
         <div class="box-title-en">Constituent elective</div>
+        <div class="box-title-da">Konstituerende valgfag</div>
         <div class="ds-summary"><a href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=206899&amp;lang=en&amp;listid=" target="_blank" rel="noopener">FA516: Kemisk og farmaceutisk data science</a></div>
       </div>
 
@@ -788,8 +791,8 @@
     <div class="box cat-physio" style="--ects:5.0">
       <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=su519&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for SU519">SU519</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 4</div>
         <div class="box-title-en">Module 4. Physiology and Pharmacology for Pharmacists</div>
+        <div class="box-title-da">Fysiologi og farmakologi for farmaceuter - Modul 4</div>
 
       </div>
 
@@ -797,8 +800,8 @@
     <div class="box cat-form" style="--ects:5.0">
       <div class="box-cat-bar cat-form"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=166915&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA514">FA514</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Lægemiddelformulering og fremstilling D</div>
         <div class="box-title-en">Drug formulation and production D</div>
+        <div class="box-title-da">Lægemiddelformulering og fremstilling D</div>
 
       </div>
 
@@ -806,8 +809,8 @@
     <div class="box cat-chem" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa506&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA506">FA506</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Medicinalkemi A</div>
         <div class="box-title-en">Medicinal Chemistry A</div>
+        <div class="box-title-da">Medicinalkemi A</div>
 
       </div>
 
@@ -815,8 +818,8 @@
     <div class="box" style="--ects:5.0">
       <div class="box-cat-bar"><span class="cat-code"><a class="cat-code-link" href="https://www.sdu.dk/da/uddannelse/bachelor/farmaci/opbygning" target="_blank" rel="noopener" aria-label="Open course page for Valgfag">Valgfag</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Valgfag</div>
         <div class="box-title-en">Elective</div>
+        <div class="box-title-da">Valgfag</div>
 
       </div>
 
@@ -824,8 +827,8 @@
     <div class="box" style="--ects:10.0">
       <div class="box-cat-bar"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bafa500&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for BAFA500">BAFA500</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Bachelorprojekt i farmaci</div>
         <div class="box-title-en">Bachelor&#x27;s Project in Pharmacy</div>
+        <div class="box-title-da">Bachelorprojekt i farmaci</div>
 
       </div>
 
@@ -835,7 +838,7 @@
 <!-- /GRID:sdu --></div>
 
 <footer class="page-footer">
-  <span>Last updated 4 November 2026 · University of Southern Denmark</span>
+  <span>Last updated 5 November 2026 · University of Southern Denmark</span>
   <span>
     <a href="https://cpdse.dk" target="_blank">cpdse.dk</a>
     &nbsp;·&nbsp;
@@ -855,7 +858,7 @@
     <img class="uni-logo" src="assets/KU_logo.png" alt="University of Copenhagen logo">
   </div>
   <div class="page-header-center">
-    <div class="page-title">University of Copenhagen – Course Overview (last updated 4 November 2026)</div>
+    <div class="page-title">University of Copenhagen – Course Overview (last updated 5 November 2026)</div>
   </div>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
 </header>
@@ -873,7 +876,7 @@
   </button>
 </div>
 
-<h1 style="display:none">University of Copenhagen – Course Overview (last updated 4 November 2026)</h1>
+<h1 style="display:none">University of Copenhagen – Course Overview (last updated 5 November 2026)</h1>
 
 <div class="grid"><!-- GRID:ucph -->
   <div class="sem-row">
@@ -882,37 +885,37 @@
       <div class="sem-label-ds">Data Science Elements</div>
     </div>
     <div class="box cat-quant" style="--ects:7.5">
-      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20001U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20001U">SFAB20001U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20001U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20001U">SFAB20001U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Lægemiddeludvikling fra molekyle til menneske</div>
         <div class="box-title-en">Drug Development from Molecule to Man</div>
+        <div class="box-title-da">Lægemiddeludvikling fra molekyle til menneske</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-chem" style="--ects:7.5">
-      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20002U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20002U">SFAB20002U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20002U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20002U">SFAB20002U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Kemiske principper</div>
         <div class="box-title-en">Chemical Principles</div>
+        <div class="box-title-da">Kemiske principper</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box box-has-ds box-ds-hi cat-bio" style="--ects:7.5">
-      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20004U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20004U">SFAB20004U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20004U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20004U">SFAB20004U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Cellulær og molekylær biologi</div>
         <div class="box-title-en">Cellular and Molecular Biology</div>
+        <div class="box-title-da">Cellulær og molekylær biologi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-chem" style="--ects:7.5">
-      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20006U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20006U">SFAB20006U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20006U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20006U">SFAB20006U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Organisk kemi I</div>
         <div class="box-title-en">Organic Chemistry I – Physicochemical Properties</div>
+        <div class="box-title-da">Organisk kemi I</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
@@ -925,37 +928,37 @@
       <div class="sem-label-ds">Data Science Elements</div>
     </div>
     <div class="box cat-quant" style="--ects:7.5">
-      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20023U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20023U">SFAB20023U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20023U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20023U">SFAB20023U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaceutisk fysisk kemi I</div>
         <div class="box-title-en">Pharmaceutical Physical Chemistry I – Thermodynamics and Equilibria</div>
+        <div class="box-title-da">Farmaceutisk fysisk kemi I</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-chem" style="--ects:7.5">
-      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20025U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20025U">SFAB20025U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20025U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20025U">SFAB20025U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Kvalitetsvurdering af farmaceutiske råvarer</div>
         <div class="box-title-en">Evaluation of Pharmaceutical Substances</div>
+        <div class="box-title-da">Kvalitetsvurdering af farmaceutiske råvarer</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box box-has-ds box-ds-hi cat-bio" style="--ects:7.5">
-      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20027U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20027U">SFAB20027U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20027U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20027U">SFAB20027U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaceutisk biologi</div>
         <div class="box-title-en">Pharmaceutical Biology</div>
+        <div class="box-title-da">Farmaceutisk biologi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-chem" style="--ects:7.5">
-      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20029U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20029U">SFAB20029U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20029U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20029U">SFAB20029U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Organisk kemi II – syntese af lægemiddelstoffer</div>
         <div class="box-title-en">Organic Chemistry II – Synthesis of Drug Compounds</div>
+        <div class="box-title-da">Organisk kemi II – syntese af lægemiddelstoffer</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
@@ -968,37 +971,37 @@
       <div class="sem-label-ds">Data Science Elements</div>
     </div>
     <div class="box cat-physio" style="--ects:7.5">
-      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20012U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20012U">SFAB20012U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20012U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20012U">SFAB20012U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Videnskabsteori og samfundsfarmaci</div>
         <div class="box-title-en">Philosophy of Science and Social Pharmacy</div>
+        <div class="box-title-da">Videnskabsteori og samfundsfarmaci</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box box-has-ds box-ds-hi cat-bio" style="--ects:7.5">
-      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20013U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20013U">SFAB20013U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20013U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20013U">SFAB20013U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Basal farmakologi</div>
         <div class="box-title-en">Basic Pharmacology</div>
+        <div class="box-title-da">Basal farmakologi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-quant" style="--ects:7.5">
-      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20017U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20017U">SFAB20017U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20017U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20017U">SFAB20017U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaceutisk fysisk kemi II</div>
         <div class="box-title-en">Pharmaceutical Physical Chemistry II – Kinetics and Transport Phenomena</div>
+        <div class="box-title-da">Farmaceutisk fysisk kemi II</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-chem" style="--ects:7.5">
-      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20015U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20015U">SFAB20015U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20015U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20015U">SFAB20015U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Biopharmaceuticals – bioorganisk kemi</div>
         <div class="box-title-en">Biopharmaceuticals – Bioorganic Chemistry</div>
+        <div class="box-title-da">Biopharmaceuticals – bioorganisk kemi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
@@ -1011,37 +1014,37 @@
       <div class="sem-label-ds">Data Science Elements</div>
     </div>
     <div class="box cat-physio" style="--ects:7.5">
-      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20033U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20033U">SFAB20033U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20033U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20033U">SFAB20033U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Samfundsfarmaci – metode og formidling</div>
         <div class="box-title-en">Social Pharmacy – Method and Dissemination</div>
+        <div class="box-title-da">Samfundsfarmaci – metode og formidling</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-chem" style="--ects:7.5">
-      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20035U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20035U">SFAB20035U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20035U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20035U">SFAB20035U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaceutisk analytisk kemi</div>
         <div class="box-title-en">Pharmaceutical Analytical Chemistry</div>
+        <div class="box-title-da">Farmaceutisk analytisk kemi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-quant" style="--ects:7.5">
-      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20031U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20031U">SFAB20031U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20031U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20031U">SFAB20031U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaci I – flydende og halvfaste lægemiddelformer</div>
         <div class="box-title-en">Pharmaceutics I – Liquid and Semi-Solid Dosage Forms</div>
+        <div class="box-title-da">Farmaci I – flydende og halvfaste lægemiddelformer</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-bio" style="--ects:7.5">
-      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB23001U" target="_blank" rel="noopener" aria-label="Open course page for SFAB23001U">SFAB23001U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB23001U" target="_blank" rel="noopener" aria-label="Open course page for SFAB23001U">SFAB23001U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Organfarmakologi</div>
         <div class="box-title-en">Organ Pharmacology</div>
+        <div class="box-title-da">Organfarmakologi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
@@ -1054,28 +1057,28 @@
       <div class="sem-label-ds">Data Science Elements</div>
     </div>
     <div class="box cat-chem" style="--ects:7.5">
-      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20008U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20008U">SFAB20008U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20008U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20008U">SFAB20008U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Lægemidler fra naturen</div>
         <div class="box-title-en">Drugs from Nature</div>
+        <div class="box-title-da">Lægemidler fra naturen</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-quant" style="--ects:7.5">
-      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20010U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20010U">SFAB20010U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20010U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20010U">SFAB20010U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmaci II – faste lægemiddelformer</div>
         <div class="box-title-en">Pharmaceutics II – Solid Dosage Forms</div>
+        <div class="box-title-da">Farmaci II – faste lægemiddelformer</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
     </div>
     <div class="box cat-bio" style="--ects:7.5">
-      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFABIL117U" target="_blank" rel="noopener" aria-label="Open course page for SFABIL117U">SFABIL117U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFABIL117U" target="_blank" rel="noopener" aria-label="Open course page for SFABIL117U">SFABIL117U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Systemfarmakologi</div>
         <div class="box-title-en">Systems Pharmacology – Signaling Pathways</div>
+        <div class="box-title-da">Systemfarmakologi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
@@ -1088,10 +1091,10 @@
       <div class="sem-label-ds">Data Science Elements</div>
     </div>
     <div class="box cat-physio" style="--ects:7.5">
-      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20019U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20019U">SFAB20019U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7,5 ECTS</span></div></div>
+      <div class="box-cat-bar cat-physio"><span class="cat-code"><a class="cat-code-link" href="https://kurser.ku.dk/course/SFAB20019U" target="_blank" rel="noopener" aria-label="Open course page for SFAB20019U">SFAB20019U</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Farmakoterapi</div>
         <div class="box-title-en">Pharmacotherapy</div>
+        <div class="box-title-da">Farmakoterapi</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
@@ -1099,8 +1102,8 @@
     <div class="box" style="--ects:15.0">
       <div class="box-cat-bar"><span class="cat-code"></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">15 ECTS</span></div></div>
       <div class="box-main">
-        <div class="box-title-da">Bachelorprojekt i farmaci</div>
         <div class="box-title-en">Bachelor&#x27;s Project in Pharmacy</div>
+        <div class="box-title-da">Bachelorprojekt i farmaci</div>
 
       </div>
       <div class="box-ds"><div class="ds-body"></div></div>
@@ -1109,7 +1112,7 @@
 <!-- /GRID:ucph --></div>
 
 <footer class="page-footer">
-  <span>Last updated 4 November 2026 · University of Copenhagen</span>
+  <span>Last updated 5 November 2026 · University of Copenhagen</span>
   <span>
     <a href="https://www.cpdse.dk" target="_blank">cpdse.dk</a>
     &nbsp;·&nbsp;
@@ -1189,7 +1192,31 @@
     document.querySelectorAll('.uni-nav a').forEach(a => {
       a.classList.toggle('active', a.dataset.uni === uni);
     });
-    equalizeDS(document.getElementById(uni + '-content'));
+    const content = document.getElementById(uni + '-content');
+    sizeCoursesByECTS(content);
+    equalizeDS(content);
+  }
+
+  function sizeCoursesByECTS(container) {
+    if (!container) return;
+    const minimumWidth = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--ects-w')
+    ) || 0;
+    container.querySelectorAll('.sem-row').forEach(row => {
+      const children = Array.from(row.children);
+      const boxes = children.filter(child => child.classList.contains('box'));
+      if (!boxes.length || !row.clientWidth) return;
+
+      const totalECTS = boxes.reduce((sum, box) => (
+        sum + (parseFloat(box.style.getPropertyValue('--ects')) || 1)
+      ), 0);
+      const label = children.find(child => child.classList.contains('sem-label'));
+      const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+      const availableWidth = row.clientWidth
+        - (label ? label.getBoundingClientRect().width : 0)
+        - gap * Math.max(0, children.length - 1);
+      row.style.setProperty('--ects-w', `${Math.max(minimumWidth, availableWidth / totalECTS)}px`);
+    });
   }
 
   // Keep data-science bands aligned within each semester without carrying tall categories into every row.
@@ -1209,13 +1236,25 @@
     });
   }
 
+  sizeCoursesByECTS(document.getElementById('sdu-content'));
   equalizeDS(document.getElementById('sdu-content'));
+  window.addEventListener('resize', () => {
+    const active = document.querySelector('.uni-nav a.active');
+    const content = document.getElementById((active ? active.dataset.uni : 'sdu') + '-content');
+    sizeCoursesByECTS(content);
+    equalizeDS(content);
+  });
   window.addEventListener('beforeprint', () => {
-    document.querySelectorAll('[id$="-content"]').forEach(equalizeDSPerRow);
+    document.querySelectorAll('[id$="-content"]').forEach(container => {
+      sizeCoursesByECTS(container);
+      equalizeDSPerRow(container);
+    });
   });
   window.addEventListener('afterprint', () => {
     const active = document.querySelector('.uni-nav a.active');
-    equalizeDS(document.getElementById((active ? active.dataset.uni : 'sdu') + '-content'));
+    const content = document.getElementById((active ? active.dataset.uni : 'sdu') + '-content');
+    sizeCoursesByECTS(content);
+    equalizeDS(content);
   });
 </script>
 </body>
