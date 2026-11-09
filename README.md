@@ -10,7 +10,9 @@ Interactive course overview for the Bachelor of Pharmacy programme at the Univer
 
 - All 6 semesters with courses laid out in a grid
 - SDU primary data-science categories per course, shown as colored, filterable badges
+- Course header colours represent course categories, separately from the data-science badge colours
 - Existing data-science element display for UCPH
+- Subtle course-category colours, with optional legend and filters under “Show course categories and filters”; closing it clears those filters
 - CPDSE colour scheme
 - Print-ready layout (fits 2× A4 landscape)
 

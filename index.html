@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Course overview – Bachelor of Pharmacy (SDU, from autumn 2024). Shows data science elements across all semesters.">
-<title>Bachelor of Pharmacy – Course Overview (SDU, last updated 5 November 2026)</title>
+<title>Bachelor of Pharmacy – Course Overview (SDU, last updated 9 November 2026)</title>
 <style>
   :root {
     --ds-h: 40px;
@@ -145,13 +145,14 @@
   .cat-code-link { color: inherit; text-decoration: none; }
   .cat-code-link:hover { text-decoration: underline; text-underline-offset: 2px; }
   .cat-code-link:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
-  /* Category bar colours — soft pastels, distinguishable, harmonising with the CPDSE palette */
-  .box-cat-bar.cat-quant    { background: #DECBE4; --cat-color: #DECBE4; }
-  .box-cat-bar.cat-chem     { background: #B3CDE3; --cat-color: #B3CDE3; }
-  .box-cat-bar.cat-bio      { background: #CCEBC5; --cat-color: #CCEBC5; }
-  .box-cat-bar.cat-physio   { background: #FBB4AE; --cat-color: #FBB4AE; }
-  .box-cat-bar.cat-form     { background: #FED9A6; --cat-color: #FED9A6; }
-  .box-cat-bar.cat-practice { background: #FFFFCC; --cat-color: #FFFFCC; }
+  /* Soft course-category colours keep the data-science badges prominent. */
+  .box-cat-bar.cat-quant    { --cat-color: #DECBE4; }
+  .box-cat-bar.cat-chem     { --cat-color: #B3CDE3; }
+  .box-cat-bar.cat-bio      { --cat-color: #CCEBC5; }
+  .box-cat-bar.cat-physio   { --cat-color: #FBB4AE; }
+  .box-cat-bar.cat-form     { --cat-color: #FED9A6; }
+  .box-cat-bar.cat-practice { --cat-color: #FFFFCC; }
+  .box-cat-bar[class*="cat-"] { background: color-mix(in srgb, var(--cat-color, white) 60%, white); }
   /* ECTS tags pick up a lighter tint of the course category colour. */
   .box-cat-bar[class*="cat-"] .tag-ects {
     background: color-mix(in srgb, var(--cat-color) 35%, white);
@@ -231,7 +232,7 @@
     border-left: 4px solid var(--ds-color);
     border-radius: 3px;
     padding: 4px 8px;
-    background: #fff;
+    background: color-mix(in srgb, var(--ds-color) 12%, white);
     color: #333;
     font-size: 12px;
     line-height: 1.3;
@@ -257,11 +258,17 @@
   .ds-body        { padding: 6px 8px 8px; font-size: 14px; line-height: 1.5; color: var(--charcoal); }
   .ds-body a      { color: var(--forest); text-decoration: underline; text-decoration-color: var(--mint); }
   .ds-body a:hover { color: var(--sage); }
+  .ds-taxonomy-heading { margin: 0 0 8px; }
+  .ds-taxonomy-heading h2 { font-size: 15px; color: var(--forest); margin-bottom: 3px; }
+  .ds-taxonomy-heading p { font-size: 12px; color: #555; line-height: 1.4; }
+  .ds-all-filter {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin: 0 0 10px; font-size: 12px; color: #555;
+  }
   .ds-taxonomy-legend {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px 8px;
+    gap: 8px;
+    padding: 3px;
     margin: 0 0 10px;
     font-size: 12px;
     color: var(--charcoal);
@@ -272,17 +279,22 @@
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    white-space: nowrap;
     border: 1px solid #C8C8C8;
     border-left: 4px solid var(--ds-color);
     border-radius: 4px;
-    padding: 5px 9px;
-    background: #fff;
+    padding: 8px 11px;
+    background: color-mix(in srgb, var(--ds-color) 12%, white);
     color: var(--charcoal);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: bold;
     line-height: 1.25;
     transition: filter 120ms ease, box-shadow 120ms ease, transform 120ms ease;
   }
+  .ds-taxonomy-btn:first-child { margin-left: auto; }
+  .ds-taxonomy-btn:last-child { margin-right: auto; }
   .ds-taxonomy-btn:hover { background: #F5F5F5; transform: translateY(-1px); }
   .ds-taxonomy-btn:focus-visible { outline: 2px solid #666; outline-offset: 2px; }
   .ds-taxonomy-btn.active { border-color: #999; border-left-color: var(--ds-color); box-shadow: inset 0 0 0 1px #777; }
@@ -296,6 +308,19 @@
   .ds-info-item { background: #fff; border: 1px solid #E0E0E0; border-left: 4px solid var(--ds-color); border-radius: 3px; padding: 6px 9px; }
   .ds-info-item p { margin-top: 3px; line-height: 1.4; }
   .ds-info-examples { color: #666; font-size: 11px; }
+  .course-category-options { margin: 0 0 12px; font-size: 12px; }
+  .course-category-options summary {
+    display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+    padding: 6px 10px; border: 1px solid var(--sage); border-radius: 4px;
+    background: var(--ivory); color: var(--forest); font-weight: bold;
+    list-style: none;
+  }
+  .course-category-options summary::-webkit-details-marker { display: none; }
+  .course-category-options summary::before { content: "+"; font-size: 15px; line-height: 1; }
+  .course-category-options[open] summary::before { content: "−"; }
+  .course-category-options summary:hover { background: var(--sand); }
+  .course-category-options summary:focus-visible { outline: 2px solid #666; outline-offset: 2px; }
+  .course-category-options .legend { margin: 8px 0 0; }
 
   /* ── Print ── */
   @media print {
@@ -313,7 +338,7 @@
     .details-btn, .course-modal { display: none !important; }
     .sem-label-ds { font-size: 6.5px; }
     .ds-body      { font-size: 6.5px; padding: 3px 4px 4px; }
-    .ds-taxonomy-legend, .ds-info { display: none !important; }
+    .ds-taxonomy-heading, .ds-all-filter, .ds-taxonomy-legend, .ds-info { display: none !important; }
     .box-main     { padding: 4px 5px 3px; }
     .semester-heading { font-size: 7px; }
     .semester-heading strong { font-size: 9px; }
@@ -491,10 +516,21 @@
       color: var(--charcoal);
       border-color: #999;
     }
+    .ds-all-filter .ds-filter-btn {
+      padding: 7px 11px;
+      border: 2px solid #333;
+      background: #fff;
+      font-size: 13px;
+    }
+    .ds-all-filter .ds-filter-btn.active {
+      background: #333;
+      color: #fff;
+      border-color: #333;
+    }
   }
 
   @media print {
-    .uni-nav, .page-header, .page-footer, .legend, .ds-filter, .btn-print { display: none !important; }
+    .uni-nav, .page-header, .page-footer, .legend, .ds-filter, .btn-print, .course-category-options { display: none !important; }
     h1 { display: block !important; }
   }
 </style>
@@ -516,12 +552,18 @@
     <img class="uni-logo" src="assets/SDU_logo.png" alt="University of Southern Denmark logo">
   </div>
   <div class="page-header-center">
-    <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, last updated 5 November 2026)</div>
+    <div class="page-title">Bachelor of Pharmacy – Course Overview (SDU, last updated 9 November 2026)</div>
   </div>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
 </header>
 
-<div class="legend"><!-- LEGEND:sdu -->
+<!-- DS-LEGEND:sdu -->
+<div class="ds-taxonomy-heading"><h2>Data science categories</h2><p>Coloured badges show data-science categories; course header colours show course categories.</p></div><div class="ds-all-filter"><button type="button" class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" title="Show only courses with data science elements; bold black outlines identify them">Show DS courses</button><span>Black outline = data science</span></div><div class="ds-taxonomy-legend" aria-label="Filter by data science category"><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-mathematics" aria-pressed="false" style="--ds-color:#7B61A8" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression." onclick="toggleDSCategoryFilter(this)">Mathematics and statistics</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-computing" aria-pressed="false" style="--ds-color:#2878B5" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools." onclick="toggleDSCategoryFilter(this)">Computing and programming</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-governance" aria-pressed="false" style="--ds-color:#6C757D" title="How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data." onclick="toggleDSCategoryFilter(this)">Data governance</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-handling" aria-pressed="false" style="--ds-color:#00A6A6" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly." onclick="toggleDSCategoryFilter(this)">Data handling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-exploration" aria-pressed="false" style="--ds-color:#4E9F50" title="Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis." onclick="toggleDSCategoryFilter(this)">Exploration</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-analysis" aria-pressed="false" style="--ds-color:#F28E2B" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning." onclick="toggleDSCategoryFilter(this)">Analysis and modelling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-machine-learning" aria-pressed="false" style="--ds-color:#D9534F" title="Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI." onclick="toggleDSCategoryFilter(this)">Machine learning and AI</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-visualization" aria-pressed="false" style="--ds-color:#B08D00" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached." onclick="toggleDSCategoryFilter(this)">Visualization and reporting</button></div><details class="ds-info"><summary>What do the categories mean?</summary><div class="ds-info-group"><h3>Foundations</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.</p><p class="ds-info-examples"><em>Examples:</em> Linearization, a degradation rate as a derivative, AUC as an integral, a dataset as a matrix, standard errors and confidence intervals, t-tests and ANOVA.</p></div><div class="ds-info-item" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.</p><p class="ds-info-examples"><em>Examples:</em> Organizing files and projects, writing and rerunning R scripts, reading error messages, finding help, using AI assistants critically when writing code.</p></div></div></div><div class="ds-info-group"><h3>Data workflow</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#6C757D"><strong>Data governance</strong><p>How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data.</p><p class="ds-info-examples"><em>Examples:</em> Tidy data structure, file naming, metadata and the FAIR principles, keeping raw data unchanged, secure storage, GDPR and anonymization.</p></div><div class="ds-info-item" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.</p><p class="ds-info-examples"><em>Examples:</em> Importing instrument output or spreadsheets, filtering and selecting, creating variables, converting units, joining tables, reshaping between wide and long format.</p></div><div class="ds-info-item" style="--ds-color:#4E9F50"><strong>Exploration</strong><p>Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis.</p><p class="ds-info-examples"><em>Examples:</em> Histograms, boxplots and scatter plots, summary tables by group, spotting outliers, checking assumptions such as normality or linearity.</p></div><div class="ds-info-item" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.</p><p class="ds-info-examples"><em>Examples:</em> t-tests and ANOVA, correlation, linear and nonlinear regression, confidence intervals on parameters, reaction and release kinetics, dose-response and pharmacokinetic models.</p></div><div class="ds-info-item" style="--ds-color:#D9534F"><strong>Machine learning and AI</strong><p>Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI.</p><p class="ds-info-examples"><em>Examples:</em> PCA, k-means and hierarchical clustering, random forests, training and test sets, cross-validation and overfitting, the basic ideas behind neural networks and LLMs.</p></div><div class="ds-info-item" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.</p><p class="ds-info-examples"><em>Examples:</em> Choosing the right plot type, figure design, showing uncertainty, reproducible reports that combine text, code and results (e.g. Quarto), posters and presentations.</p></div></div></div></details>
+<!-- /DS-LEGEND:sdu -->
+
+<details class="course-category-options" ontoggle="toggleCourseCategories(this)">
+  <summary>Show course categories and filters</summary>
+  <div class="legend"><!-- LEGEND:sdu -->
   <button class="legend-btn" data-cat="cat-quant" aria-pressed="false" style="background:#DECBE4" onclick="toggleCategoryFilter(this)">Quantitative &amp; Analytical Methods</button>
   <button class="legend-btn" data-cat="cat-chem" aria-pressed="false" style="background:#B3CDE3" onclick="toggleCategoryFilter(this)">Chemistry</button>
   <button class="legend-btn" data-cat="cat-bio" aria-pressed="false" style="background:#CCEBC5" onclick="toggleCategoryFilter(this)">Biology &amp; Biochemistry</button>
@@ -529,12 +571,9 @@
   <button class="legend-btn" data-cat="cat-form" aria-pressed="false" style="background:#FED9A6" onclick="toggleCategoryFilter(this)">Formulation &amp; Manufacturing</button>
   <button class="legend-btn" data-cat="cat-practice" aria-pressed="false" style="background:#FFFFCC" onclick="toggleCategoryFilter(this)">Pharmacy Practice &amp; Society</button>
 <!-- /LEGEND:sdu --></div>
+</details>
 
-<!-- DS-LEGEND:sdu -->
-<div class="ds-taxonomy-legend" aria-label="Filter by data science category"><button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" title="Show only courses with data science elements; bold black outlines identify them">Data Science</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-mathematics" aria-pressed="false" style="--ds-color:#7B61A8" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression." onclick="toggleDSCategoryFilter(this)">Mathematics and statistics</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-computing" aria-pressed="false" style="--ds-color:#2878B5" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools." onclick="toggleDSCategoryFilter(this)">Computing and programming</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-governance" aria-pressed="false" style="--ds-color:#6C757D" title="How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data." onclick="toggleDSCategoryFilter(this)">Data governance</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-handling" aria-pressed="false" style="--ds-color:#00A6A6" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly." onclick="toggleDSCategoryFilter(this)">Data handling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-exploration" aria-pressed="false" style="--ds-color:#4E9F50" title="Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis." onclick="toggleDSCategoryFilter(this)">Exploration</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-analysis" aria-pressed="false" style="--ds-color:#F28E2B" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning." onclick="toggleDSCategoryFilter(this)">Analysis and modelling</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-machine-learning" aria-pressed="false" style="--ds-color:#D9534F" title="Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI." onclick="toggleDSCategoryFilter(this)">Machine learning and AI</button><button type="button" class="ds-taxonomy-btn" data-ds-cat="ds-visualization" aria-pressed="false" style="--ds-color:#B08D00" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached." onclick="toggleDSCategoryFilter(this)">Visualization and reporting</button></div><details class="ds-info"><summary>What do the categories mean?</summary><div class="ds-info-group"><h3>Foundations</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.</p><p class="ds-info-examples"><em>Examples:</em> Linearization, a degradation rate as a derivative, AUC as an integral, a dataset as a matrix, standard errors and confidence intervals, t-tests and ANOVA.</p></div><div class="ds-info-item" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.</p><p class="ds-info-examples"><em>Examples:</em> Organizing files and projects, writing and rerunning R scripts, reading error messages, finding help, using AI assistants critically when writing code.</p></div></div></div><div class="ds-info-group"><h3>Data workflow</h3><div class="ds-info-grid"><div class="ds-info-item" style="--ds-color:#6C757D"><strong>Data governance</strong><p>How data is organized, documented, stored and protected so it can be found, understood, trusted and reused, including the ethical and legal responsibilities of health data.</p><p class="ds-info-examples"><em>Examples:</em> Tidy data structure, file naming, metadata and the FAIR principles, keeping raw data unchanged, secure storage, GDPR and anonymization.</p></div><div class="ds-info-item" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.</p><p class="ds-info-examples"><em>Examples:</em> Importing instrument output or spreadsheets, filtering and selecting, creating variables, converting units, joining tables, reshaping between wide and long format.</p></div><div class="ds-info-item" style="--ds-color:#4E9F50"><strong>Exploration</strong><p>Getting to know the data before drawing conclusions: quick summaries and plots to see patterns, catch problems and check whether the data suit the planned analysis.</p><p class="ds-info-examples"><em>Examples:</em> Histograms, boxplots and scatter plots, summary tables by group, spotting outliers, checking assumptions such as normality or linearity.</p></div><div class="ds-info-item" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.</p><p class="ds-info-examples"><em>Examples:</em> t-tests and ANOVA, correlation, linear and nonlinear regression, confidence intervals on parameters, reaction and release kinetics, dose-response and pharmacokinetic models.</p></div><div class="ds-info-item" style="--ds-color:#D9534F"><strong>Machine learning and AI</strong><p>Methods that learn patterns from data to reduce dimensions, find groups or predict outcomes, including tuning, validation and a conceptual understanding of modern AI.</p><p class="ds-info-examples"><em>Examples:</em> PCA, k-means and hierarchical clustering, random forests, training and test sets, cross-validation and overfitting, the basic ideas behind neural networks and LLMs.</p></div><div class="ds-info-item" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.</p><p class="ds-info-examples"><em>Examples:</em> Choosing the right plot type, figure design, showing uncertainty, reproducible reports that combine text, code and results (e.g. Quarto), posters and presentations.</p></div></div></div></details>
-<!-- /DS-LEGEND:sdu -->
-
-<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 5 November 2026)</h1>
+<h1 style="display:none">Bachelor of Pharmacy – Course Overview (SDU, last updated 9 November 2026)</h1>
 
 <div class="grid"><!-- GRID:sdu -->
   <div class="semester-group">
@@ -550,14 +589,15 @@
 
       <template class="course-details"><h2>MM556: Mathematics and statistics for pharmacy</h2><p class="detail-summary">MM556 is the first-semester mathematics and statistics course for pharmacy students. It covers the calculus and statistics that later courses build on, from functions and derivatives to integrals, differential equations and hypothesis testing, mostly illustrated with pharmaceutical and life science examples. The course has no dedicated data science material. Data science runs through it as the mathematical and statistical foundation for later work, with R introduced early as a tool for calculations and plots.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The core of the course, and what the exams, quizzes and group exercises assess. Most of the time goes to mathematics, with statistics in the final weeks.</p><h4>Mathematics</h4><ul><li>Units and dimensional analysis</li><li>Functions and their properties: linear, exponential, logarithmic, power, periodic and sigmoid functions, composition and inverses</li><li>Least-squares fitting of a line, and linearization with log and log-log transforms</li><li>Sequences and recursion: fixed points, steady states and limits</li><li>Derivatives as rates of change: maxima and minima, concavity and Taylor approximation</li><li>Integrals as accumulated change and area under a curve: numerical integration (midpoint and trapezoid rules), the fundamental theorem of calculus, substitution and integration by parts</li><li>Differential equations: first-order models, separation of variables and Euler&#x27;s method</li></ul><h4>Statistics</h4><ul><li>Descriptive statistics: mean, median, variance, standard deviation and histograms</li><li>Covariance and correlation, and correlation versus causation</li><li>Probability: random variables, expected value and variance, and the binomial, normal and exponential distributions</li><li>Hypothesis testing: t-test, chi-squared test, ANOVA and p-values</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced early with a worksheet and a quiz, and is then available throughout as a calculator and plotting tool, alongside solving problems by hand.</p><ul><li>R basics: calculations, variables, vectors and functions</li><li>Data frames, basic dplyr, and reading and writing CSV files</li><li>Plotting with ggplot2</li><li>Implementing numerical methods: numerical integration, Euler&#x27;s method and recursive sequences</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Students fit models to small datasets and simulate how models behave, while most of the modelling in the course is about the mathematics behind them.</p><ul><li>Linear regression and prediction</li><li>Fitting exponential and power-law models by linearization</li><li>Simulating discrete-time models towards a steady state</li><li>Numerical solutions of differential equations</li><li>Numerical integration of measured data</li></ul></div></template>
     </div>
-    <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:10.0">
+    <div class="box box-has-ds box-ds-hi cat-quant has-details" style="--ects:10.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa501&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA501">FA501</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-en">Pharmacy introductory course</div>
         <div class="box-title-da">Farmaci grundkursus</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for FA501">i</button></div>
       </div>
 
+      <template class="course-details"><h2>FA501: Pharmacy introductory course</h2><p class="detail-summary">FA501 introduces pharmaceutical analytical chemistry: how drug substances are identified and quantified with pharmacopoeia methods such as spectrophotometry and titration, and how lab work is documented and reported under good laboratory practice. Data science comes in through the lab data. Students meet R for the first time here and use it to turn the raw data from each lab exercise into results and figures for their reports. Statistics enters through the precision and reliability of analytical results.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced from scratch and then used to process the data in every lab exercise, building from guided code toward students writing small functions themselves.</p><ul><li>R and RStudio, scripts and R projects as a traceable, rerunnable record of the work</li><li>Objects, vectors, data types, functions and packages</li><li>Reading common error messages and finding help</li><li>Writing simple functions and loops to repeat a calculation across several data sets</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Each exercise starts with getting data from several lab groups into R and into a shape ready for analysis.</p><ul><li>Entering data in data frames, and importing CSV, Excel and instrument files</li><li>Handling missing values</li><li>Tidy data and reshaping between wide and long format</li><li>Selecting subsets of data and turning raw instrument output into usable variables</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Students build their report figures in R and present their results in written lab reports.</p><ul><li>Building plots in layers with ggplot2: points, lines and fitted lines, grouped by colour</li><li>Figure design: axis scales, labels with units, a clean theme, and the fitted equation and R² shown on the plot</li><li>Exporting figures and reporting results as mean ± SD</li><li>Writing lab reports and protocols, and giving and receiving peer feedback</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Results come from linear calibration and fixed calculation steps, which are then checked against specification limits.</p><ul><li>Linear calibration curves: fitting, slope, intercept and R², the linear range, and back-calculating unknown concentrations</li><li>Standard addition and matrix effects</li><li>Finding inflection points from the numerical derivative of a curve</li><li>Method validation: selectivity, linearity, accuracy, precision, limits of detection and quantification, and robustness</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>A lecture on precision and accuracy lays the statistical groundwork that students apply to every lab result.</p><ul><li>Mean, standard deviation and relative standard deviation</li><li>Accuracy versus precision, and random versus systematic error</li><li>Propagation of uncertainty and significant figures</li></ul></div></template>
     </div>
     <div class="box cat-chem" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=180287&amp;lang=da&amp;listid=" target="_blank" rel="noopener" aria-label="Open course page for KE557">KE557</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
@@ -592,14 +632,15 @@
   <div class="semester-group">
     <div class="semester-heading"><span class="sem-tag">Semester</span><strong>2</strong><span>(Spring)</span></div>
     <div class="sem-row">
-    <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:5.0">
+    <div class="box box-has-ds box-ds-hi cat-quant has-details" style="--ects:5.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fy528&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FY528">FY528</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-en">Physics for Biology and Pharmacy</div>
         <div class="box-title-da">Fysik for Biologi og Farmaci</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for FY528">i</button></div>
       </div>
 
+      <template class="course-details"><h2>FY528: Physics for Biology and Pharmacy</h2><p class="detail-summary">FY528 introduces the physics behind biological and pharmaceutical systems: forces and energy, light and optical activity, heat and ideal gases, diffusion and fluid flow. The focus is on understanding physical laws and describing simple systems mathematically. Data science appears through the mathematical and statistical tools the physics is built on, and through lab exercises where students fit physical models to their own measurements.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The physics is taught through simple mathematics and probability, which students practise by hand in weekly problem sets and in the exam.</p><ul><li>Units, dimensional analysis and unit conversion</li><li>Vectors: addition, components and projections</li><li>Rates of change and areas under curves: velocity and acceleration as derivatives, work as an integral</li><li>Reading and sketching graphs, including slopes and areas as physical quantities</li><li>Logarithms and linearization of power laws and exponential relationships</li><li>Discrete and continuous probability distributions: normalization, mean and mean square, probabilities as integrals</li><li>The normal distribution, variance and standard deviation, and variance growing linearly with time in a random walk</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>In all three lab exercises, students fit simple physical models to data they have collected and compare the results with theory.</p><ul><li>Fitting a normal distribution to measured data</li><li>Linear regression on linearized models to estimate physical parameters from the slope</li><li>Polynomial fitting to locate a minimum in measured data</li><li>Calculating quantities from the area under a measured curve</li><li>Comparing estimated parameters with theoretical and reference values</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Students present their lab results in short written reports and an oral presentation, with required figures and interpretation.</p><ul><li>Histograms with a fitted distribution, data with fitted lines, and measured curves</li><li>Figures integrated in the text with interpretation and comparison with theory</li><li>Short written lab reports and a brief oral presentation of results</li></ul></div></template>
     </div>
     <div class="box cat-bio" style="--ects:10.0">
       <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa508&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA508">FA508</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
@@ -643,14 +684,15 @@
       </div>
 
     </div>
-    <div class="box box-has-ds box-ds-hi cat-form" style="--ects:7.5">
+    <div class="box box-has-ds box-ds-hi cat-form has-details" style="--ects:7.5">
       <div class="box-cat-bar cat-form"><span class="cat-code"><a class="cat-code-link" href="http://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa511&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA511">FA511</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">7.5 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-en">Drug formulation and production A</div>
         <div class="box-title-da">Lægemiddelformulering og fremstilling A</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for FA511">i</button></div>
       </div>
 
+      <template class="course-details"><h2>FA511: Drug formulation and production A</h2><p class="detail-summary">FA511 is a course on liquid and semi-solid formulations, from solutions and suspensions to ointments, creams and gels. It covers solubility and solubilisation, excipients, pharmacopoeia requirements and small-scale manufacture of medicines. Data science comes in through the lab work, where students analyse their own experimental data in R and write their lab reports as reproducible Quarto documents.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Communicating lab results clearly and transparently is the main data science aim of the course, practised in lab reports that must be approved.</p><ul><li>Reproducible reports in Quarto that combine text, code and results</li><li>Scientific report structure, with results presented in both text and figures, including captions and mean ± SD</li><li>Clear figures in ggplot2: plot types matched to the data (grouped and stacked bar charts, error bars, faceted panels, plots over time), with scales, labels and legends adjusted for the reader</li><li>Self-explanatory scientific posters</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Each data analysis starts with getting the students&#x27; own lab data into a usable shape in R.</p><ul><li>Importing csv files and entering small datasets as data frames</li><li>Summarising replicate measurements (mean and standard deviation)</li><li>Reshaping data from wide to long format, with categorical variables (factors) to control grouping and order</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced early through short functions and is then the working tool for the lab reports.</p><ul><li>Organising work in RStudio projects with relative file paths</li><li>Writing functions with arguments and reusing them on new inputs</li><li>Building an analysis as a script: loading packages, chaining steps with the pipe and storing results as objects</li><li>Adapting existing code to new data</li></ul></div></template>
     </div>
     <div class="box cat-bio" style="--ects:5.0">
       <div class="box-cat-bar cat-bio"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=bmb530&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for BMB530">BMB530</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
@@ -670,14 +712,15 @@
       </div>
 
     </div>
-    <div class="box box-has-ds box-ds-hi cat-chem" style="--ects:5.0">
+    <div class="box box-has-ds box-ds-hi cat-chem has-details" style="--ects:5.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=fagbesk&amp;id=202312&amp;lang=da&amp;listid=" target="_blank" rel="noopener" aria-label="Open course page for FA515">FA515</a></span><div class="box-meta"><a class="repo-link" href="https://github.com/CPDSE-EDUX/SDU-BSc-FA515-Pharmaceutical-Physical-Chemistry" target="_blank" rel="noopener" title="Open public course materials on GitHub" aria-label="Open public GitHub materials for FA515">GitHub</a><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-en">Pharmaceutical Physical Chemistry</div>
         <div class="box-title-da">Farmaceutisk fysisk kemi</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for FA515">i</button></div>
       </div>
 
+      <template class="course-details"><h2>FA515: Pharmaceutical Physical Chemistry</h2><p class="detail-summary">FA515 covers the physical chemistry behind drug formulation, manufacturing, storage and delivery: thermodynamics, solutions and colligative properties, phase transitions, acid-base equilibria, ionic solutions, interfaces and reaction kinetics. Data science appears as R-based analysis of physical chemistry data. Students linearize physical laws, fit them with linear regression and turn the fitted lines into physical quantities, in assignments and in their own lab data.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Fitting linearized physical models to data is the common thread of the R material, used in mandatory assignments and in the lab reports.</p><ul><li>Linearizing mechanistic models (rate laws, Arrhenius, Clausius-Clapeyron) for linear regression</li><li>Choosing between competing models using R² and the pattern of points around the fitted line</li><li>Turning slope and intercept into physical parameters with units</li><li>Using fitted models to predict and extrapolate, such as shelf life or a rate constant at a new temperature</li><li>Fitting and comparing models across groups or conditions in one dataset</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Clear figures are required in every lab report, and the R material shows how to build and report them.</p><ul><li>Plotting data with fitted lines in ggplot2, with groups shown by colour and shape</li><li>Clear labelling: axis titles with units and mathematical notation</li><li>Reporting fit results (equation, R²) on the figure or in the caption</li><li>Reproducible reports combining text, code and results in Quarto</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Each analysis starts by getting data into shape, both provided datasets and students&#x27; own lab measurements.</p><ul><li>Importing csv and Excel files laid out as tidy data</li><li>Transforming variables, converting units and correcting raw instrument readings</li><li>Filtering by condition and collecting results in a table for reporting</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced from scratch, then used through guides that build on each other.</p><ul><li>R and RStudio basics: scripts, projects and relative file paths</li><li>Core building blocks: objects, vectors, functions, packages and the pipe</li><li>Reading error messages and debugging step by step</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>The mathematics serves the chemistry, mainly to linearize equations and interpret fits.</p><ul><li>Logarithms and exponentials for linearizing equations</li><li>Least squares and R² as a measure of fit</li><li>Standard deviation, measurement uncertainty and sources of error</li></ul></div></template>
     </div>
     </div>
   </div>
@@ -694,23 +737,25 @@
       </div>
 
     </div>
-    <div class="box box-has-ds box-ds-hi cat-form" style="--ects:5.0">
+    <div class="box box-has-ds box-ds-hi cat-form has-details" style="--ects:5.0">
       <div class="box-cat-bar cat-form"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa503&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA503">FA503</a></span><div class="box-meta"><a class="repo-link" href="https://github.com/CPDSE-EDUX/SDU-BSc-FA503-Drug-Formulation-and-Production-B" target="_blank" rel="noopener" title="Open public course materials on GitHub" aria-label="Open public GitHub materials for FA503">GitHub</a><span class="tag tag-ects" title="Course size in ECTS credits">5 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-en">Drug formulation and production B</div>
         <div class="box-title-da">Lægemiddelformulering og fremstilling B</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-handling" data-ds-cat="ds-handling" title="Getting data into a usable shape: importing, cleaning, handling missing values and basic transformations, done reproducibly.">Data handling</span><span class="ds-badge ds-visualization" data-ds-cat="ds-visualization" title="Communicating data and results through clear, well-designed figures and transparent reports that show both the findings and how they were reached.">Visualization and reporting</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for FA503">i</button></div>
       </div>
 
+      <template class="course-details"><h2>FA503: Drug formulation and production B</h2><p class="detail-summary">FA503 is about formulating, making and quality testing solid dosage forms such as powders, capsules and tablets. Data science comes in through the course&#x27;s own lab data, which students process in R and write up in an R/Quarto lab report.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#00A6A6"><strong>Data handling</strong><p>Each analysis starts from raw measurements that students import and transform step by step in R.</p><ul><li>Importing CSV files with different separator and decimal formats</li><li>Creating and converting variables, including calibration and dilution</li><li>Cumulative sums and values from neighbouring rows</li><li>Grouped summaries of mean and standard deviation</li><li>Subsetting and checking values against limits</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>The results end up as figures and tables in a lab report.</p><ul><li>Layered plots with ggplot2</li><li>Error bars for mean ± standard deviation</li><li>Histograms with unequal bins and frequency density</li><li>Cumulative curves, including log scales</li><li>Observed data with a fitted model curve</li><li>Exporting figures and writing a reproducible Quarto report</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Results are mainly judged against pharmacopoeial acceptance criteria, with optional model fitting.</p><ul><li>Two-stage acceptance testing from mean and standard deviation</li><li>Mode, median, mean and percentiles of a distribution</li><li>Linear interpolation</li><li>Nonlinear least squares fitting and parameter estimates</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>Programming concepts are introduced where the analysis needs them.</p><ul><li>R projects and working directories</li><li>The pipe operator</li><li>Conditional statements and logical operators</li><li>Writing a simple function</li></ul></div></template>
     </div>
-    <div class="box box-has-ds box-ds-hi cat-quant" style="--ects:10.0">
+    <div class="box box-has-ds box-ds-hi cat-quant has-details" style="--ects:10.0">
       <div class="box-cat-bar cat-quant"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=fa507&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for FA507">FA507</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
       <div class="box-main">
         <div class="box-title-en">Instrumental pharmaceutical analysis</div>
         <div class="box-title-da">Instrumentel farmaceutisk analyse</div>
-        <div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div>
+        <div class="card-foot"><div class="ds-category-list" aria-label="Primary data-science categories"><span class="ds-badge ds-mathematics" data-ds-cat="ds-mathematics" title="The concepts behind the methods: functions and rates of change, basic calculus, linear algebra, distributions, uncertainty, hypothesis testing and regression.">Mathematics and statistics</span><span class="ds-badge ds-computing" data-ds-cat="ds-computing" title="Digital literacy and the thinking behind programming, so skills carry over between languages and tools. R is the main teaching language, used to build scripts and workflows others can rerun. Also covers troubleshooting code and critical use of AI tools.">Computing and programming</span><span class="ds-badge ds-analysis" data-ds-cat="ds-analysis" title="Extracting results from data and judging how reliable they are, from statistical analysis to mechanistic models whose parameters have real meaning.">Analysis and modelling</span></div><button type="button" class="details-btn" onclick="openCourseDetails(this)" title="How data science is taught in this course" aria-label="Data science details for FA507">i</button></div>
       </div>
 
+      <template class="course-details"><h2>FA507: Instrumental pharmaceutical analysis</h2><p class="detail-summary">FA507 teaches the instrumental methods used to identify and quantify drug substances, such as HPLC, GC and AAS, and how to develop and validate an analytical method. Applied statistics makes up about half the course, framed around an analyst&#x27;s decisions: is the instrument stable, do two methods agree, what concentration does a signal correspond to, and is the method fit for purpose. The methods are applied in R and to calibration data from instrumental analysis.</p><h3>Main data science focus</h3><div class="detail-note detail-primary" style="--ds-color:#7B61A8"><strong>Mathematics and statistics</strong><p>Statistics is a core subject of the course, and the concepts behind each method are covered before they are applied.</p><ul><li>Descriptive statistics: centre and spread, standard error, coefficient of variation, bias and recovery</li><li>Probability, density and cumulative distribution functions, the normal distribution and Z-scores</li><li>t, chi-squared and F distributions</li><li>Hypothesis testing: hypotheses, one- and two-tailed tests, p-values, confidence intervals, statistical vs practical significance</li><li>Linear models behind ANOVA and regression, correlation and R²</li><li>Experimental design: replication, randomisation, blocking and representative sampling</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#F28E2B"><strong>Analysis and modelling</strong><p>Choosing the right analysis and judging whether a result can be trusted is central throughout the course.</p><ul><li>t-tests (one-sample, two-sample, paired) and F-tests for precision</li><li>One- and two-way ANOVA with post hoc comparisons, interaction and assumption checks</li><li>Repeatability and reproducibility from ANOVA</li><li>Linear regression for calibration, residual analysis, and predicted concentrations with confidence intervals</li><li>Method validation: bias, precision, accuracy, limits of detection and quantification, linearity and working range</li><li>Quantification by external standard, internal standard, and standard addition</li></ul></div><div class="detail-note detail-primary" style="--ds-color:#2878B5"><strong>Computing and programming</strong><p>R is introduced early and is then used throughout as the tool for calculating, testing, and plotting.</p><ul><li>Reading data and working with vectors and data frames</li><li>Running statistical tests and models, and using distribution functions for probabilities and critical values</li><li>Base R plotting</li></ul></div><h3>Also present</h3><div class="detail-note detail-secondary" style="--ds-color:#4E9F50"><strong>Exploration</strong><p>Plotting the data comes first in every analysis and is also used to check test assumptions.</p><ul><li>Scatter, sequence, histogram and box plots to spot drift and outliers</li><li>Normal Q-Q plots and graphical checks of constant variance</li></ul></div><div class="detail-note detail-secondary" style="--ds-color:#B08D00"><strong>Visualization and reporting</strong><p>Communicating analytical results clearly is part of the course, with calibration curves as the main example.</p><ul><li>Presenting calibration curves with clear axes, units and a sensible choice of figures vs tables</li><li>Choosing a plot that represents the data honestly</li><li>Writing statistical conclusions in practical terms</li></ul></div></template>
     </div>
     <div class="box cat-chem" style="--ects:10.0">
       <div class="box-cat-bar cat-chem"><span class="cat-code"><a class="cat-code-link" href="https://odin.sdu.dk/sitecore/index.php?a=searchfagbesk&amp;internkode=ke505&amp;lang=da" target="_blank" rel="noopener" aria-label="Open course page for KE505">KE505</a></span><div class="box-meta"><span class="tag tag-ects" title="Course size in ECTS credits">10 ECTS</span></div></div>
@@ -838,7 +883,7 @@
 <!-- /GRID:sdu --></div>
 
 <footer class="page-footer">
-  <span>Last updated 5 November 2026 · University of Southern Denmark</span>
+  <span>Last updated 9 November 2026 · University of Southern Denmark</span>
   <span>
     <a href="https://cpdse.dk" target="_blank">cpdse.dk</a>
     &nbsp;·&nbsp;
@@ -858,17 +903,10 @@
     <img class="uni-logo" src="assets/KU_logo.png" alt="University of Copenhagen logo">
   </div>
   <div class="page-header-center">
-    <div class="page-title">University of Copenhagen – Course Overview (last updated 5 November 2026)</div>
+    <div class="page-title">University of Copenhagen – Course Overview (last updated 9 November 2026)</div>
   </div>
   <button class="btn-print" onclick="window.print()">⎙ Print / PDF</button>
 </header>
-
-<div class="legend"><!-- LEGEND:ucph -->
-  <button class="legend-btn" data-cat="cat-quant" aria-pressed="false" style="background:#DECBE4" onclick="toggleCategoryFilter(this)">Development and production of drugs</button>
-  <button class="legend-btn" data-cat="cat-chem" aria-pressed="false" style="background:#B3CDE3" onclick="toggleCategoryFilter(this)">The chemical basis for drugs and drug substances</button>
-  <button class="legend-btn" data-cat="cat-bio" aria-pressed="false" style="background:#CCEBC5" onclick="toggleCategoryFilter(this)">The pharmacological basis for drugs and drug substances</button>
-  <button class="legend-btn" data-cat="cat-physio" aria-pressed="false" style="background:#FBB4AE" onclick="toggleCategoryFilter(this)">Use of drugs</button>
-<!-- /LEGEND:ucph --></div>
 
 <div class="ds-filter">
   <button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" title="Show only courses with data-science upgrades">
@@ -876,7 +914,17 @@
   </button>
 </div>
 
-<h1 style="display:none">University of Copenhagen – Course Overview (last updated 5 November 2026)</h1>
+<details class="course-category-options" ontoggle="toggleCourseCategories(this)">
+  <summary>Show course categories and filters</summary>
+  <div class="legend"><!-- LEGEND:ucph -->
+  <button class="legend-btn" data-cat="cat-quant" aria-pressed="false" style="background:#DECBE4" onclick="toggleCategoryFilter(this)">Development and production of drugs</button>
+  <button class="legend-btn" data-cat="cat-chem" aria-pressed="false" style="background:#B3CDE3" onclick="toggleCategoryFilter(this)">The chemical basis for drugs and drug substances</button>
+  <button class="legend-btn" data-cat="cat-bio" aria-pressed="false" style="background:#CCEBC5" onclick="toggleCategoryFilter(this)">The pharmacological basis for drugs and drug substances</button>
+  <button class="legend-btn" data-cat="cat-physio" aria-pressed="false" style="background:#FBB4AE" onclick="toggleCategoryFilter(this)">Use of drugs</button>
+<!-- /LEGEND:ucph --></div>
+</details>
+
+<h1 style="display:none">University of Copenhagen – Course Overview (last updated 9 November 2026)</h1>
 
 <div class="grid"><!-- GRID:ucph -->
   <div class="sem-row">
@@ -1112,7 +1160,7 @@
 <!-- /GRID:ucph --></div>
 
 <footer class="page-footer">
-  <span>Last updated 5 November 2026 · University of Copenhagen</span>
+  <span>Last updated 9 November 2026 · University of Copenhagen</span>
   <span>
     <a href="https://www.cpdse.dk" target="_blank">cpdse.dk</a>
     &nbsp;·&nbsp;
@@ -1165,6 +1213,17 @@
       const matchesDS = !dsOnly || box.classList.contains('box-has-ds');
       box.style.display = (matchesCat && matchesDSCats && matchesDS) ? '' : 'none';
     });
+  }
+
+  function toggleCourseCategories(details) {
+    const scope = details.closest('[id$="-content"]');
+    if (!details.open) {
+      details.querySelectorAll('.legend-btn.active').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
+      });
+      applyFilters(scope);
+    }
   }
 
   function toggleCategoryFilter(btn) {

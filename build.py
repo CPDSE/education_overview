@@ -485,10 +485,16 @@ def render_ds_legend():
         + '</details>'
     )
     return (
-        '<div class="ds-taxonomy-legend" aria-label="Filter by data science category">'
-        '<button class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" '
+        '<div class="ds-taxonomy-heading">'
+        '<h2>Data science categories</h2>'
+        '<p>Coloured badges show data-science categories; course header colours show course categories.</p>'
+        '</div>'
+        '<div class="ds-all-filter">'
+        '<button type="button" class="ds-filter-btn" aria-pressed="false" onclick="toggleDSFilter(this)" '
         'title="Show only courses with data science elements; bold black outlines identify them">'
-        'Data Science</button>'
+        'Show DS courses</button>'
+        '<span>Black outline = data science</span></div>'
+        '<div class="ds-taxonomy-legend" aria-label="Filter by data science category">'
         + "".join(items)
         + '</div>'
         + info
