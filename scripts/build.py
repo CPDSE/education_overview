@@ -1,16 +1,25 @@
-"""Regenerate index.html from Pharma_DS_Course_Overview.xlsx (sheets 'SDU' and 'UCPH').
+"""Build the course and progression pages from source data in assets/data/.
 
-Usage: python build.py
+Usage: python3 scripts/build.py
+       python3 scripts/build.py --template templates/clean.html --output clean.html
 """
 import html
+import argparse
+import csv
+import json
+import os
 import re
 from datetime import date
 from pathlib import Path
 
 import openpyxl
 
-XLSX_PATH = Path(__file__).parent / "Pharma_DS_Course_Overview.xlsx"
-HTML_PATH = Path(__file__).parent / "index.html"
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "assets" / "data"
+XLSX_PATH = DATA_DIR / "Pharma_DS_Course_Overview.xlsx"
+HTML_PATH = ROOT / "index.html"
+PROGRESSION_PATH = DATA_DIR / "Pharma_DS_Progression.xlsx"
+EVIDENCE_PATH = DATA_DIR / "evidence.csv"
 
 # Shared colour pool — categories are assigned slugs/colours in order, per university.
 SLUG_POOL = ["cat-quant", "cat-chem", "cat-bio", "cat-physio", "cat-form", "cat-practice"]
@@ -507,8 +516,191 @@ def replace_between(text, start_marker, end_marker, new_content):
     return text[:start] + "\n" + new_content + "\n" + text[end:]
 
 
+def load_progression(path=PROGRESSION_PATH):
+    """Read the editable proposal; fail rather than silently misrepresent a review."""
+    wb = openpyxl.load_workbook(path, data_only=False)
+
+    def records(sheet, fields):
+        ws = wb[sheet]
+        headers = [cell.value for cell in ws[4]]
+        missing = set(fields) - set(headers)
+        if missing:
+            raise ValueError(f"{sheet}: missing headers: {', '.join(sorted(missing))}")
+        result = []
+        for row in ws.iter_rows(min_row=5):
+            if not any(cell.value is not None for cell in row):
+                continue
+            if any(cell.data_type == "f" for cell in row):
+                raise ValueError(f"{sheet}: source tables must contain plain values, not formulas")
+            values = {}
+            for header, key in fields.items():
+                value = row[headers.index(header)].value
+                if hasattr(value, "isoformat"):
+                    value = value.date().isoformat() if hasattr(value, "date") else value.isoformat()
+                values[key] = str(value if value is not None else "").strip()
+            result.append(values)
+        return result
+
+    targets = records("Targets", {
+        "Target ID": "id", "Semester": "semester", "Category": "category",
+        "Emphasis": "emphasis", "Short title": "title",
+        "Expected student action": "action", "Example task": "example",
+        "Support available": "support", "Builds on": "builds_on",
+        "Evidence to request": "evidence_requested", "Handover expectation": "handover",
+        "Design note": "note",
+    })
+    review = records("Review", {
+        "Target ID": "target_id", "Course(s)": "courses", "Match": "match",
+        "Participation": "participation", "Observed student task": "observed_task",
+        "Support in practice": "support", "Evidence reference": "evidence",
+        "Teacher": "teacher", "Review date": "date", "Next change": "next_change",
+        "Notes": "notes", "Priority": "priority",
+    })
+    links = records("Pilot links", {
+        "Link ID": "id", "From target": "from", "To target": "to",
+        "Evidence IDs": "evidence_ids", "Candidate change": "change",
+        "Confirmation needed": "confirmation", "Decision": "decision",
+        "Owner": "owner", "Review date": "date", "Notes": "notes",
+    })
+    sources = records("Sources", {
+        "Source": "title", "Reference": "reference", "Checked on": "date",
+        "Use and limitation": "limitation",
+    })
+    wb.close()
+    target_ids = set()
+    positions = set()
+    emphases = {"Introduce", "Practise", "Extend", "Transfer", "Integrate", "No new target"}
+    split_ids = lambda value: [part.strip() for part in value.split(";") if part.strip()]
+    for target in targets:
+        target_id = target["id"]
+        if not target_id or target_id in target_ids:
+            raise ValueError(f"Targets: duplicate or empty Target ID: {target_id}")
+        target_ids.add(target_id)
+        if target["semester"] not in {str(i) for i in range(1, 7)}:
+            raise ValueError(f"{target_id}: semester must be an integer from 1 to 6")
+        target["semester"] = int(target["semester"])
+        if target["category"] not in DS_CATEGORIES or target["emphasis"] not in emphases:
+            raise ValueError(f"{target_id}: unknown category or emphasis")
+        position = (target["semester"], target["category"])
+        if position in positions:
+            raise ValueError(f"{target_id}: more than one target for {position}")
+        positions.add(position)
+        if any(not target[key] for key in ("title", "action", "example", "support", "evidence_requested", "handover", "note")):
+            raise ValueError(f"{target_id}: incomplete proposed expectation")
+        target["builds_on"] = split_ids(target["builds_on"])
+    expected = {(s, c) for s in range(1, 7) for c in DS_CATEGORIES}
+    if positions != expected:
+        raise ValueError("Targets must cover all eight categories in each of the six semesters")
+    by_id = {target["id"]: target for target in targets}
+    for target in targets:
+        for previous in target["builds_on"]:
+            if previous not in by_id or by_id[previous]["semester"] > target["semester"]:
+                raise ValueError(f"{target['id']}: unknown or future prerequisite {previous}")
+
+    def visit(target_id, trail):
+        if target_id in trail:
+            raise ValueError(f"Targets: circular Builds on reference involving {target_id}")
+        for previous in by_id[target_id]["builds_on"]:
+            visit(previous, trail | {target_id})
+
+    for target_id in by_id:
+        visit(target_id, set())
+    review_ids = set()
+    for row in review:
+        target_id = row["target_id"]
+        if target_id not in target_ids or target_id in review_ids:
+            raise ValueError(f"Review: unknown or duplicate target {target_id}")
+        review_ids.add(target_id)
+        if row["match"] not in {"Not reviewed", "Aligned", "Partly aligned", "Gap confirmed", "Not applicable"}:
+            raise ValueError(f"{target_id}: unknown review status")
+        if row["participation"] not in {"To confirm", "Required", "Optional"} or row["priority"] not in {"To discuss", "Candidate", "Selected", "Deferred"}:
+            raise ValueError(f"{target_id}: unknown participation or priority")
+        if row["match"] != "Not reviewed" and any(not row[key] for key in ("observed_task", "evidence", "teacher", "date")):
+            raise ValueError(f"{target_id}: a reviewed judgement needs the observed task, evidence, teacher and date")
+        if row["date"]:
+            date.fromisoformat(row["date"])
+    if review_ids != target_ids:
+        raise ValueError("Review must contain exactly one record for each proposed target")
+    link_ids = set()
+    for link in links:
+        if not link["id"] or link["id"] in link_ids:
+            raise ValueError("Pilot links: duplicate or empty Link ID")
+        link_ids.add(link["id"])
+        if link["from"] not in target_ids or link["to"] not in target_ids:
+            raise ValueError(f"{link['id']}: unknown handover target")
+        if by_id[link["from"]]["semester"] >= by_id[link["to"]]["semester"]:
+            raise ValueError(f"{link['id']}: a handover must lead to a later semester")
+        if link["decision"] not in {"To discuss", "Selected", "Deferred", "Implemented"}:
+            raise ValueError(f"{link['id']}: unknown decision")
+        if not link["change"] or not link["confirmation"]:
+            raise ValueError(f"{link['id']}: candidate change and confirmation question are required")
+        if link["decision"] == "Implemented" and any(not link[key] for key in ("owner", "date", "notes")):
+            raise ValueError(f"{link['id']}: an implemented change needs an owner, date and outcome notes")
+        if link["date"]:
+            date.fromisoformat(link["date"])
+        link["evidence_ids"] = split_ids(link["evidence_ids"])
+    return {"targets": targets, "review": review, "links": links, "sources": sources}
+
+
+def build_clean(template, output):
+    """Combine recorded course content, proposed progression and pilot evidence."""
+    universities = {}
+    for uni in UNIVERSITIES:
+        semesters, _, mapped = load_courses(uni["sheet"])
+        universities[uni["key"]] = {
+            "mapped": mapped,
+            "courses": [course for courses in semesters.values() for course in courses],
+        }
+    with EVIDENCE_PATH.open(encoding="utf-8-sig", newline="") as source:
+        evidence = list(csv.DictReader(source))
+    progression = load_progression(PROGRESSION_PATH)
+    evidence_ids = {row["id"] for row in evidence}
+    for link in progression["links"]:
+        if not set(link["evidence_ids"]) <= evidence_ids:
+            raise ValueError(f"{link['id']}: unknown exercise evidence reference")
+    payload = {
+        "universities": universities,
+        "categories": DS_CATEGORIES,
+        "descriptions": DS_DESCRIPTIONS,
+        "evidence": evidence,
+        "progression": progression,
+        "updated": date.today().strftime("%d %B %Y").lstrip("0"),
+    }
+    # Embedded JSON must not be able to terminate its script element.
+    data = json.dumps(payload, ensure_ascii=False).replace("<", "\\u003c").replace(
+        ">", "\\u003e"
+    ).replace("&", "\\u0026")
+    text = template.read_text(encoding="utf-8")
+    marker = "<!-- CLEAN:DATA -->"
+    if text.count(marker) != 1:
+        raise ValueError("Alternative template must contain exactly one CLEAN:DATA marker")
+    text = text.replace(marker, f'<script id="course-data" type="application/json">{data}</script>')
+    # Links and assets remain usable when output is written into a subdirectory.
+    base = Path(os.path.relpath(ROOT, output.resolve().parent)).as_posix()
+    if base != ".":
+        for prefix in ('src="assets/', 'href="assets/', 'href="progression/', 'href="index.html'):
+            attribute, value = prefix.split('="', 1)
+            text = text.replace(prefix, f'{attribute}="{base}/{value}')
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
+    print(f"Wrote {output} from the workbook and {len(evidence)} pilot evidence records.")
+
+
 def main():
-    text = HTML_PATH.read_text(encoding="utf-8")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--template", type=Path, help="HTML template (defaults to index.html)")
+    parser.add_argument("--output", type=Path, help="Destination HTML file")
+    args = parser.parse_args()
+    template = args.template or HTML_PATH
+    text = template.read_text(encoding="utf-8")
+    if "<!-- CLEAN:DATA -->" in text:
+        if args.output is None:
+            parser.error("the alternative template requires --output to preserve the template")
+        if template.resolve() == args.output.resolve():
+            parser.error("alternative template and output must be different files")
+        build_clean(template, args.output)
+        return
+    output = args.output or (template if args.template else HTML_PATH)
     today = date.today()
     last_updated = f"{today.day} {today.strftime('%B %Y')}"
 
@@ -537,8 +729,9 @@ def main():
 
         total_courses += sum(len(v) for v in by_semester.values())
 
-    HTML_PATH.write_text(text, encoding="utf-8")
-    print(f"Wrote {HTML_PATH} from {total_courses} courses across {len(UNIVERSITIES)} universities.")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
+    print(f"Wrote {output} from {total_courses} courses across {len(UNIVERSITIES)} universities.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore data science across pharmacy education, from course content to curriculum progression.">
+<title>Data science in pharmacy · CPDSE</title>
+<style>
+  :root { --ink:#243c30; --muted:#59675e; --green:#3c5e3e; --line:#dce2d9; --paper:#fafbf7; --soft:#edf1e8; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 Arial,Helvetica,sans-serif; }
+  button,input,select { font:inherit; }
+  button,select,summary,a { -webkit-tap-highlight-color:transparent; }
+  button,select { cursor:pointer; }
+  a { color:var(--green); text-underline-offset:3px; }
+  button { color:inherit; }
+  button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible { outline:3px solid #826612; outline-offset:4px; }
+  [hidden] { display:none !important; }
+  .print-only { display:none; }
+  .wrap { max-width:1240px; margin:auto; padding:0 40px; }
+  header { border-bottom:1px solid var(--line); background:white; }
+  .masthead { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:90px; }
+  .logo { width:200px; height:auto; }
+  .university { display:flex; align-items:center; gap:12px; font-size:14px; }
+  select { background:white; border:1px solid #aeb9ab; border-radius:6px; padding:10px 34px 10px 12px; color:var(--ink); max-width:100%; }
+  .intro { padding:48px 0 28px; }
+  .eyebrow { text-transform:uppercase; letter-spacing:.13em; font-size:11px; font-weight:bold; color:var(--muted); margin:0 0 12px; }
+  h1 { font:normal clamp(32px,4vw,46px)/1.15 Georgia,serif; letter-spacing:-.025em; margin:0 0 16px; }
+  .lede { color:var(--muted); max-width:720px; margin:0; }
+  .tabs { display:flex; flex-wrap:wrap; gap:0 28px; border-bottom:1px solid var(--line); }
+  .tabs button { border:0; background:none; padding:15px 0; border-bottom:3px solid transparent; color:var(--muted); }
+  .tabs button[aria-pressed="true"] { border-color:var(--green); color:var(--ink); font-weight:bold; }
+  .small-tag { font-size:11px; border:1px solid var(--line); border-radius:4px; padding:3px 6px; margin-left:7px; font-weight:normal; white-space:nowrap; }
+  .toolbar { display:flex; gap:16px; align-items:end; flex-wrap:wrap; padding:24px 0 18px; }
+  .field { display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:bold; }
+  .field select { font-size:14px; font-weight:normal; min-width:210px; }
+  .checks { display:flex; gap:20px; align-items:center; margin-left:auto; padding-bottom:11px; font-size:13px; }
+  input { accent-color:var(--green); }
+  .checks label { display:flex; align-items:center; gap:7px; cursor:pointer; }
+  .context { display:flex; justify-content:space-between; gap:20px; font-size:12px; color:var(--muted); padding-bottom:20px; }
+  .context p { margin:0; }
+  .text-button { border:0; background:none; padding:0; text-decoration:underline; text-underline-offset:3px; color:var(--green); font-size:inherit; }
+  .semester { display:grid; grid-template-columns:110px 1fr; border-top:1px solid var(--line); padding:22px 0; gap:24px; }
+  .semester-label h2 { font-size:15px; margin:0; }
+  .semester-label p { font-size:12px; color:var(--muted); margin:5px 0; }
+  .cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  .course { display:flex; flex-direction:column; text-align:left; border:1px solid var(--line); border-radius:8px; padding:17px; background:white; width:100%; min-height:155px; transition:border-color .15s,box-shadow .15s; }
+  .course:hover { border-color:#8b9e85; box-shadow:0 3px 12px #243c3009; }
+  .course-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px; }
+  .code { font-size:12px; font-weight:bold; letter-spacing:.04em; }
+  .credits { color:var(--muted); font-size:11px; white-space:nowrap; }
+  .course-title { font-size:15px; font-weight:normal; line-height:1.35; margin-bottom:15px; }
+  .badges { display:flex; flex-wrap:wrap; gap:5px; margin-top:auto; }
+  .badge { font-size:12px; font-weight:normal; line-height:1.4; padding:3px 7px; border:1px solid #dce2d9; border-left:3px solid var(--badge-color,#9aab93); border-radius:3px; background:#fcfdfb; color:var(--ink); }
+  .pending { color:var(--muted); font-size:11px; margin-top:auto; }
+  .subject { font-size:11px; color:var(--muted); margin:10px 0 0; }
+  .empty { color:var(--muted); margin:6px 0; font-size:13px; grid-column:1/-1; }
+  .glossary { border-top:1px solid var(--line); padding:20px 0; }
+  summary { cursor:pointer; }
+  .glossary > summary { font-size:13px; }
+  .definitions { display:grid; grid-template-columns:1fr 1fr; gap:16px 36px; padding:20px 0; }
+  .definitions h3 { font-size:14px; margin:0 0 5px; }
+  .definitions p { font-size:13px; color:var(--muted); margin:0; }
+  .progress-head { display:flex; align-items:start; gap:30px; padding:28px 0 22px; }
+  h2 { font-weight:normal; }
+  .progress-head h2 { margin:0 0 8px; font:normal 26px Georgia,serif; }
+  .progress-head p { font-size:14px; color:var(--muted); margin:0; max-width:720px; }
+  .status { display:inline-block; background:#f7f0dc; color:#705a1e; border-radius:4px; font-size:11px; padding:4px 8px; white-space:nowrap; }
+  .capabilities { display:flex; gap:8px; margin:0 0 22px; flex-wrap:wrap; }
+  .capabilities button { background:white; border:1px solid #b7c2b1; border-radius:6px; padding:9px 16px; font-size:13px; }
+  .capabilities button[aria-pressed="true"] { background:var(--green); border-color:var(--green); color:white; }
+  .sequence { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .sequence-heading { padding:0 0 14px; border-bottom:2px solid #a2b397; }
+  .sequence-heading p { font-size:12px; color:var(--muted); margin:0 0 5px; }
+  .sequence-heading h3 { font:normal 24px Georgia,serif; margin:0; }
+  .sequence-heading span { font-size:12px; color:var(--muted); display:block; margin-top:4px; }
+  .activity { border-bottom:1px solid var(--line); padding:20px 0; }
+  .activity h4 { font-size:15px; margin:0 0 9px; }
+  .activity p { font-size:13px; margin:10px 0; }
+  .activity details { font-size:12px; margin-top:15px; }
+  .activity details p { color:var(--muted); }
+  dl { display:grid; grid-template-columns:100px 1fr; gap:7px 12px; font-size:12px; }
+  dt { font-weight:bold; } dd { margin:0; }
+  .connection { margin:28px 0; padding:22px 24px; background:var(--soft); border-radius:8px; }
+  .connection h3 { margin:0 0 8px; font-size:16px; }
+  .connection p { font-size:14px; margin:0; max-width:900px; }
+  .connection a { display:inline-block; font-size:12px; margin-top:12px; }
+  footer { display:flex; justify-content:space-between; gap:24px; border-top:1px solid var(--line); margin-top:30px; padding:24px 0 36px; font-size:12px; color:var(--muted); }
+  dialog { border:1px solid var(--line); border-radius:12px; max-width:720px; width:calc(100% - 32px); max-height:85vh; padding:0; color:var(--ink); }
+  dialog::backdrop { background:#14251bc2; }
+  .dialog-top { padding:25px 28px 18px; position:sticky; top:0; background:white; border-bottom:1px solid var(--line); display:flex; align-items:start; justify-content:space-between; gap:16px; z-index:1; }
+  .dialog-top h2 { font:normal 25px/1.2 Georgia,serif; margin:6px 0 0; }
+  .close { border:1px solid var(--line); background:white; border-radius:5px; padding:7px 12px; font-size:13px; }
+  .dialog-body { padding:22px 28px 28px; font-size:14px; }
+  .dialog-body h3 { font-size:14px; margin:24px 0 10px; }
+  .dialog-body p { color:var(--muted); }
+  .dialog-body details { border-top:1px solid var(--line); padding:13px 0; }
+  .dialog-body details summary { font-size:14px; }
+  .dialog-body details h4 { font-size:13px; margin-bottom:6px; }
+  .dialog-body li { margin:6px 0; color:var(--muted); }
+  .links { display:flex; gap:20px; flex-wrap:wrap; margin:22px 0 0; font-size:13px; }
+  .proposal-note { border-left:3px solid #ad8d42; padding:2px 0 2px 15px; color:var(--muted); font-size:13px; max-width:880px; margin:0 0 22px; }
+  .pathway-tools { display:flex; flex-wrap:wrap; align-items:end; gap:16px 24px; margin-bottom:18px; }
+  .pathway-tools .checks { margin:0; }
+  .download { margin-left:auto; padding-bottom:10px; font-size:13px; }
+  .map-caption { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px; font-size:12px; color:var(--muted); margin-bottom:12px; }
+  .map-caption p { margin:0; }
+  .map-scroll { overflow:auto; border:1px solid var(--line); border-radius:8px; background:white; }
+  .pathway-map { border-collapse:separate; border-spacing:0; width:100%; min-width:1090px; table-layout:fixed; }
+  .pathway-map th { text-align:left; font-size:12px; font-weight:normal; line-height:1.4; padding:13px 10px; border-bottom:1px solid var(--line); background:#f2f5ee; vertical-align:top; }
+  .pathway-map thead th { border-top:3px solid var(--category-color,#dce2d9); }
+  .pathway-map th:first-child { width:92px; position:sticky; left:0; z-index:1; background:#f2f5ee; }
+  .pathway-map tbody th { font-weight:bold; padding-top:18px; }
+  .pathway-map tbody th span { display:block; font-size:10px; color:var(--muted); font-weight:normal; margin-top:5px; }
+  .pathway-map td { vertical-align:top; border-left:1px solid var(--line); border-bottom:1px solid var(--line); padding:0; }
+  .pathway-map tbody tr:last-child > * { border-bottom:0; }
+  .target-card { border:0; border-radius:0; width:100%; min-height:142px; background:white; text-align:left; padding:15px 10px; display:flex; flex-direction:column; gap:9px; line-height:1.4; }
+  .target-card:hover { background:#f1f5ed; }
+  .target-card:focus-visible { outline-offset:-4px; }
+  .target-card.quiet { background:#f6f7f3; }
+  .target-emphasis { font-size:10px; color:var(--muted); letter-spacing:.035em; }
+  .target-title { font-size:13px; }
+  .target-review { font-size:10px; padding-top:3px; color:#705a1e; }
+  .target-mapped { font-size:10px; color:var(--muted); }
+  .target-action { font-size:13px; color:var(--muted); }
+  .map-scroll.focused .pathway-map { min-width:0; }
+  .map-scroll.focused .target-card { min-height:110px; padding:18px 22px; gap:6px; }
+  .map-scroll.focused .target-title { font-size:16px; }
+  .map-scroll.focused .target-action { max-width:740px; }
+  .pathway-guide { margin:24px 0 0; padding:20px 24px; background:var(--soft); border-radius:8px; }
+  .pathway-guide h3 { font:normal 21px Georgia,serif; margin:0 0 8px; }
+  .pathway-guide p { font-size:13px; color:var(--muted); max-width:850px; margin:0 0 12px; }
+  .pathway-guide button { font-size:13px; }
+  .target-relations { display:flex; gap:8px; flex-wrap:wrap; }
+  .target-relations button { text-align:left; background:var(--soft); border:1px solid var(--line); border-radius:5px; font-size:12px; padding:8px 11px; }
+  .target-evidence { border-top:1px solid var(--line); margin-top:22px; padding-top:4px; }
+  .target-evidence .status { white-space:normal; }
+  .target-evidence ul { padding-left:19px; }
+  .target-evidence li { margin-bottom:12px; }
+  .target-evidence .text-button { text-align:left; }
+  .target-evidence .observed { margin-top:10px; }
+  @media (max-width:1050px) { .cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .checks { margin-left:0; } }
+  @media (max-width:700px) {
+    .wrap { padding:0 20px; } .masthead { min-height:80px; gap:15px; } .logo { width:135px; } .university label { display:none; }
+    .intro { padding-top:30px; } .university select { width:120px; font-size:13px; }
+    .tabs { gap:0 18px; } .tabs button { font-size:13px; } .small-tag { display:none; } .semester { grid-template-columns:1fr; gap:10px; }
+    .semester-label { display:flex; align-items:baseline; gap:12px; } .cards { grid-template-columns:1fr; }
+    .course { min-height:130px; } .context { flex-direction:column; gap:8px; } .checks { flex-wrap:wrap; padding-bottom:0; }
+    .sequence,.definitions { grid-template-columns:1fr; } .sequence { gap:30px; } .progress-head { flex-direction:column; gap:12px; }
+    footer { flex-direction:column; gap:12px; } .dialog-top,.dialog-body { padding:20px; }
+    .download { margin-left:0; } .pathway-tools .checks { padding-bottom:0; }
+    .pathway-map th:first-child { width:80px; } .pathway-guide { padding:18px; }
+    .map-scroll.focused .target-card { padding:15px; }
+  }
+  @media print {
+    @page { size:A4 landscape; margin:12mm; }
+    body { background:white; font-size:11px; } .wrap { max-width:none; padding:0; }
+    header,.toolbar,.tabs,.context,.glossary,footer,.capabilities,.links,.close,.pathway-tools,.pathway-guide { display:none !important; }
+    .intro { padding:0 0 15px; } h1 { font-size:25px; } .lede { font-size:12px; }
+    .semester { padding:6px 0; gap:10px; grid-template-columns:85px 1fr; break-inside:avoid; }
+    .cards { grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; } .course { min-height:68px; padding:8px; }
+    .course-top { margin-bottom:5px; } .course-title { font-size:11px; margin-bottom:6px; } .badge { font-size:8px; }
+    .semester-label h2 { font-size:12px; } .print-only { display:block; }
+    .sequence { grid-template-columns:repeat(3,minmax(0,1fr)); } .activity { break-inside:avoid; }
+    .map-scroll { overflow:visible; border-radius:0; } .pathway-map { min-width:0; }
+    .pathway-map caption.print-only { display:table-caption; caption-side:bottom; text-align:left; font-size:9px; padding-top:5px; }
+    .map-caption p:last-child { display:none; }
+    .pathway-map th { font-size:9px; padding:8px 5px; } .pathway-map th:first-child { position:static; width:65px; }
+    .target-card { min-height:63px; padding:6px; gap:3px; } .target-title { font-size:10px; }
+    .target-emphasis,.target-mapped,.target-review { font-size:8px; } .pathway-map tr { break-inside:avoid; }
+    .map-scroll.focused .target-card { min-height:0; padding:8px 12px; gap:3px; }
+    .map-scroll.focused .target-title { font-size:11px; } .map-scroll.focused .target-action { font-size:10px; max-width:none; }
+    .proposal-note { font-size:11px; margin-bottom:12px; } .progress-head { padding:12px 0; }
+    .progress-head h2 { font-size:21px; } .progress-head p { font-size:11px; }
+    body:has(#pathway:not([hidden])) .intro { padding:0 0 8px; }
+    body:has(#pathway:not([hidden])) .intro h1 { font-size:20px; margin-bottom:6px; }
+    body:has(#pathway:not([hidden])) .intro .lede { display:none; }
+    body:has(#pathway:not([hidden])) .eyebrow { margin-bottom:5px; }
+    body:has(#pathway:not([hidden])) .progress-head { padding:8px 0 10px; }
+    body:has(#pathway:not([hidden])) .progress-head h2 { font-size:18px; margin-bottom:4px; }
+    body:has(#pathway:not([hidden])) .progress-head p { font-size:10px; line-height:1.3; max-width:none; margin:0; }
+    body:has(#pathway:not([hidden])) .proposal-note { font-size:10px; line-height:1.3; max-width:none; margin-bottom:8px; }
+    body:has(#pathway:not([hidden])) .map-caption { font-size:9px; margin-bottom:8px; }
+    dialog[open] { position:static; width:100%; max-width:none; max-height:none; } body:has(dialog[open]) main { display:none; }
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap masthead">
+  <a href="https://www.cpdse.dk" aria-label="CPDSE home"><img class="logo" src="assets/CPDSE_logo_wide_green.png" alt="Center for Pharmaceutical Data Science Education"></a>
+  <div class="university"><label for="university">University</label><select id="university"><option value="sdu">SDU</option><option value="ucph">UCPH</option></select></div>
+</div></header>
+<main class="wrap">
+  <section class="intro"><p class="eyebrow" id="programme">Bachelor of Pharmacy · SDU</p><h1>Data science in pharmacy</h1><p class="lede">See where students encounter data science, what they work with, and how expectations connect across courses.</p></section>
+  <nav class="tabs" aria-label="Explore the curriculum"><button id="overview-tab" aria-pressed="true" aria-controls="overview">Course overview</button><button id="pathway-tab" aria-pressed="false" aria-controls="pathway">Proposed progression <span class="small-tag">Draft</span></button><button id="progression-tab" aria-pressed="false" aria-controls="progression">Exercise evidence <span class="small-tag">Pilot</span></button></nav>
+  <section id="overview" aria-labelledby="overview-tab">
+    <div class="toolbar">
+      <label class="field" for="category">Data science focus<select id="category"><option value="">All categories</option></select></label>
+      <label class="field" for="scope">Courses shown<select id="scope"><option value="ds">With DS information</option><option value="all">All courses</option></select></label>
+      <div class="checks"><label><input type="checkbox" id="subjects"> Show subject areas</label><button class="text-button" id="reset">Reset filters</button></div>
+    </div>
+    <div class="context"><p id="result-count" role="status" aria-live="polite"></p><p>Badges show primary focus. Select a course for detail.</p></div>
+    <div id="semesters"></div>
+    <details class="glossary"><summary>About the categories and this mapping</summary><p class="empty">Categories describe content, not proficiency. Filters use primary categories. Missing information does not establish that a course contains no data science. ECTS refers to the whole course.</p><div id="definitions" class="definitions"></div></details>
+  </section>
+  <section id="pathway" aria-labelledby="pathway-tab" hidden>
+    <div id="pathway-content">
+      <div class="progress-head"><div><h2>What should students build towards?</h2><p>Curriculum progression across six semesters and eight categories. Follow an expectation down a column, then ask whether our teaching prepares students for its next use.</p></div><span class="status">Proposed · SDU</span></div>
+      <p class="proposal-note">A discussion draft for the required curriculum. Categories develop at different rates; some semesters consolidate earlier work or introduce no new topic. Timing and expectations need teacher agreement.</p>
+      <div class="pathway-tools">
+        <label class="field" for="pathway-category">Follow a category<select id="pathway-category"><option value="">All eight categories</option></select></label>
+        <div class="checks"><label><input type="checkbox" id="compare-targets"> Show teaching review &amp; mapped courses</label></div>
+        <a class="download" href="assets/data/Pharma_DS_Progression.xlsx" download>Download the Excel workbook ↗</a>
+      </div>
+      <div class="map-caption"><p id="pathway-count" role="status" aria-live="polite"></p><p id="map-instruction">Select a cell for the task, support and connection to earlier learning. Scroll across on smaller screens.</p></div>
+      <div class="map-scroll" id="map-scroll" role="region" aria-label="Proposed progression by semester and data science category" tabindex="0"><table class="pathway-map" id="pathway-map"><caption class="print-only">Proposed progression · SDU · Teacher review required</caption></table></div>
+      <aside class="pathway-guide"><h3>Start with one connection</h3><p>For a manageable pilot, agree what students do in the earlier course, what the next course can expect, and which support remains available. The sampled FA503 → FA504 correction is one candidate. An explicit link, a student-written adaptation and one check could be enough for a first change.</p><button class="text-button" id="open-handover">Explore the data-handling handover →</button></aside>
+      <details class="glossary"><summary>How to use this proposal</summary><div class="definitions"><div><h3>A sequence of expectations</h3><p>Introduce, practise, extend, transfer and integrate describe the purpose of an encounter. They are not proficiency scores. Reference material and appropriate support remain available.</p></div><div><h3>Different timing</h3><p>Computing, data handling and plotting start early. Governance grows around relevant decisions. Machine learning starts later with critical appraisal; training complex models is not a core expectation.</p></div><div><h3>Compare with actual teaching</h3><p>Record the student task, support, participation and evidence in the workbook’s Review sheet. Not reviewed means unknown. Recorded category content alone does not establish alignment with a target.</p></div><div><h3>Check the change when it runs</h3><p>Agree one exercise change with teachers, then inspect student work. Agreement on a curriculum expectation does not establish that students have attained it. Projects can use a common case where comparable opportunities are missing.</p></div></div><div id="proposal-sources"></div></details>
+    </div>
+    <p id="pathway-unavailable" class="empty" hidden>This progression proposal covers the SDU bachelor programme. Select SDU to explore it. No equivalent UCPH sequence has been proposed here.</p>
+  </section>
+  <section id="progression" aria-labelledby="progression-tab" hidden>
+    <div id="pilot-content">
+      <div class="progress-head"><div><h2>Follow a capability across courses</h2><p>FA515 → FA503 → FA504 · Semesters 3–5. Compare what students are asked to do and the support provided. These exercise-based interpretations await teacher review.</p></div><span class="status">Provisional mapping</span></div>
+      <div class="capabilities" aria-label="Choose a capability"><button data-capability="Preparing experimental data" aria-pressed="true">Preparing experimental data</button><button data-capability="Fitting and interpreting models" aria-pressed="false">Fitting and interpreting models</button></div>
+      <h3 class="print-only" id="capability-label">Preparing experimental data</h3>
+      <div id="sequence" class="sequence"></div>
+      <aside class="connection" id="connection"></aside>
+      <details class="glossary"><summary>How to read curriculum progression</summary><div class="definitions"><div><h3>Independence</h3><p>Is the implementation supplied, completed within a guide, or planned by students?</p></div><div><h3>Judgement</h3><p>Are operations prescribed, choices bounded, or methods and limitations openly evaluated?</p></div><div><h3>Transfer</h3><p>Does the task match an example, explicitly recall an earlier method, or require students to recognise the connection themselves?</p></div><div><h3>What remains to be checked</h3><p>Teachers need to confirm required participation, available help, and expected outputs. Later semesters need not increase every demand. These are curriculum expectations, not measured student attainment.</p></div></div><a href="progression/workflow.md">Teacher review workflow</a> · <a href="assets/data/evidence.csv" download>Download the evidence mapping</a></details>
+    </div>
+    <p id="pilot-unavailable" class="empty" hidden>The current progression pilot covers SDU. Select SDU to explore FA515, FA503 and FA504.</p>
+  </section>
+  <footer><span>CPDSE · University of Southern Denmark &amp; University of Copenhagen</span><span id="updated"></span><button class="text-button" id="print">Print current view</button></footer>
+</main>
+<dialog id="course-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><div><span id="dialog-code" class="code"></span><h2 id="dialog-title"></h2></div><button class="close" id="close-dialog" autofocus>Close</button></div><div id="dialog-body" class="dialog-body"></div></dialog>
+<dialog id="target-dialog" aria-labelledby="target-title"><div class="dialog-top"><div><span id="target-code" class="code"></span><h2 id="target-title"></h2></div><button class="close" id="close-target" autofocus>Close</button></div><div id="target-body" class="dialog-body"></div></dialog>
+<noscript><p class="wrap">Enable JavaScript to explore the course mapping. The <a href="index.html">original overview</a> is also available.</p></noscript>
+<!-- CLEAN:DATA -->
+<script>
+  'use strict';
+  const data = JSON.parse(document.getElementById('course-data').textContent);
+  const $ = id => document.getElementById(id);
+  const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safeURL = value => /^https?:\/\//i.test(String(value)) ? escapeHTML(value) : '';
+  const state = { university:'sdu', view:'overview', capability:'Preparing experimental data' };
+  const targetsById = Object.fromEntries(data.progression.targets.map(t => [t.id,t]));
+  const reviewsById = Object.fromEntries(data.progression.review.map(r => [r.target_id,r]));
+  const hasDS = c => c.ds_primary.length || c.ds_desc || (typeof c.ds_version === 'number' && c.ds_version >= 2);
+  function badges(categories) {
+    return categories.map(cat => `<span class="badge" style="--badge-color:${data.categories[cat][1]}">${escapeHTML(cat)}</span>`).join('');
+  }
+  function renderOverview() {
+    const courses = data.universities[state.university].courses;
+    const category = $('category').value;
+    const visible = courses.filter(c => ($('scope').value === 'all' || hasDS(c)) && (!category || c.ds_primary.includes(category)));
+    $('result-count').textContent = `${visible.length} of ${courses.length} course entries shown · ${state.university === 'sdu' ? '6 semesters' : 'UCPH mapping in progress'}`;
+    $('semesters').innerHTML = Array.from({length:6}, (_,i) => {
+      const semester = i + 1;
+      const matches = visible.filter(c => c.semester === semester);
+      return `<section class="semester" aria-label="Semester ${semester}"><div class="semester-label"><h2>Semester ${semester}</h2><p>${semester % 2 ? 'Autumn' : 'Spring'}</p></div><div class="cards">${matches.length ? matches.map(c => {
+        const index = courses.indexOf(c);
+        const label = c.ds_primary.length ? badges(c.ds_primary) : `<span class="pending">${hasDS(c) ? (c.code === 'Valgfag' ? 'Elective · DS option' : c.ds_desc ? 'DS description available' : 'DS upgrade recorded · mapping pending') : 'DS content not documented'}</span>`;
+        return `<button class="course" data-course="${index}" aria-haspopup="dialog"><span class="course-top"><span class="code">${escapeHTML(c.code || 'Project')}</span><span class="credits">${escapeHTML(c.ects)} ECTS</span></span><span class="course-title">${escapeHTML(c.title_en || c.title_da)}</span><span class="badges">${label}</span>${$('subjects').checked && c.category ? `<span class="subject">${escapeHTML(c.category)}</span>` : ''}</button>`;
+      }).join('') : `<p class="empty">${category ? 'No primary category match in this semester.' : 'No data science information recorded for this semester.'}</p>`}</div></section>`;
+    }).join('');
+    $('semesters').querySelectorAll('[data-course]').forEach(button => button.addEventListener('click', () => openCourse(courses[Number(button.dataset.course)])));
+  }
+  function noteBody(text) {
+    return String(text).split(/\n\s*\n/).map(block => {
+      if (block.trim().startsWith('- ')) return `<ul>${block.trim().split('\n').map(line => `<li>${escapeHTML(line.replace(/^\s*-\s*/,''))}</li>`).join('')}</ul>`;
+      if (/^\*\*[^]*\*\*$/.test(block.trim())) return `<h4>${escapeHTML(block.trim().slice(2,-2))}</h4>`;
+      return `<p>${escapeHTML(block).replace(/\n/g,' ')}</p>`;
+    }).join('');
+  }
+  function noteGroup(notes) {
+    return notes.map(([category,text]) => `<details><summary>${escapeHTML(category)}</summary>${noteBody(text)}</details>`).join('');
+  }
+  function openCourse(c) {
+    $('dialog-code').textContent = `${c.code || 'Project'} · Semester ${c.semester} · ${c.ects} ECTS`;
+    $('dialog-title').textContent = c.title_en || c.title_da;
+    const details = c.details;
+    const description = c.ds_desc ? `<p>${escapeHTML(c.ds_desc).replace(/https?:\/\/[^\s)]+/g, url => `<a href="${url}" target="_blank" rel="noopener">Course information</a>`)}</p>` : '';
+    $('dialog-body').innerHTML = `<p>${escapeHTML(c.title_da)}</p>${details ? `<p>${escapeHTML(details.summary)}</p>` : description || '<p>A detailed account of the data science teaching has not yet been recorded.</p>'}
+      ${details && details.primary.length ? `<h3>Main data science focus</h3>${noteGroup(details.primary)}` : c.ds_primary.length ? `<h3>Main data science focus</h3><div class="badges">${badges(c.ds_primary)}</div>` : ''}
+      ${c.ds_secondary.length ? `<h3>Also present</h3><p>${c.ds_secondary.map(escapeHTML).join(' · ')}</p>` : ''}
+      ${details && details.secondary.length ? noteGroup(details.secondary) : ''}
+      <div class="links">${safeURL(c.webpage) ? `<a href="${safeURL(c.webpage)}" target="_blank" rel="noopener">Official course page ↗</a>` : ''}${safeURL(c.github) ? `<a href="${safeURL(c.github)}" target="_blank" rel="noopener">Teaching materials ↗</a>` : ''}</div>`;
+    if (state.university === 'sdu' && data.evidence.some(row => row.course === c.code)) {
+      const button = document.createElement('button');
+      button.className = 'text-button'; button.style.marginTop = '20px';
+      button.textContent = 'Explore this course in the progression pilot →';
+      button.addEventListener('click', () => { $('course-dialog').close(); switchView('progression'); });
+      $('dialog-body').append(button);
+    }
+    if (state.university === 'sdu' && c.code !== 'Valgfag') {
+      const targets = data.progression.targets.filter(t => t.semester === c.semester && [...c.ds_primary,...c.ds_secondary].includes(t.category));
+      if (targets.length) {
+        const group = document.createElement('div');
+        group.innerHTML = `<h3>Proposed expectations to discuss</h3><p>These match the semester and recorded primary or secondary categories. Their coverage in this course has not been established.</p><div class="target-relations">${targets.map(t => `<button data-target="${escapeHTML(t.id)}">${escapeHTML(t.category)}</button>`).join('')}</div>`;
+        group.querySelectorAll('[data-target]').forEach(button => button.addEventListener('click', () => {
+          $('course-dialog').close(); switchView('pathway'); openTarget(button.dataset.target);
+        }));
+        $('dialog-body').append(group);
+      }
+    }
+    $('course-dialog').showModal();
+  }
+  function mappedCourses(target) {
+    return data.universities.sdu.courses.filter(c => c.semester === target.semester && c.code !== 'Valgfag' && [...c.ds_primary,...c.ds_secondary].includes(target.category));
+  }
+  function renderPathway() {
+    $('pathway-content').hidden = state.university !== 'sdu'; $('pathway-unavailable').hidden = state.university === 'sdu';
+    const category = $('pathway-category').value;
+    const categories = category ? [category] : Object.keys(data.categories);
+    const compare = $('compare-targets').checked;
+    const reviewed = data.progression.review.filter(r => r.match !== 'Not reviewed').length;
+    $('pathway-count').textContent = `${category || '8 categories'} · 6 semesters · ${reviewed} of ${data.progression.targets.length} entries reviewed. Unreviewed entries are unknown.`;
+    $('map-scroll').classList.toggle('focused', Boolean(category));
+    $('pathway-map').innerHTML = `<caption class="print-only">Proposed progression · SDU · Teacher review required</caption><thead><tr><th scope="col">Semester</th>${categories.map(c => `<th scope="col" style="--category-color:${data.categories[c][1]}">${escapeHTML(c)}</th>`).join('')}</tr></thead><tbody>${Array.from({length:6}, (_,i) => {
+      const semester = i + 1;
+      return `<tr><th scope="row">${semester}<span>${semester % 2 ? 'Autumn' : 'Spring'}</span></th>${categories.map(c => {
+        const target = data.progression.targets.find(t => t.semester === semester && t.category === c);
+        const review = reviewsById[target.id];
+        const courses = mappedCourses(target).map(course => `${course.code} (${course.ds_primary.includes(c) ? 'primary' : 'secondary'})`);
+        return `<td><button class="target-card${target.emphasis === 'No new target' ? ' quiet' : ''}" data-target="${escapeHTML(target.id)}" aria-haspopup="dialog" aria-label="${escapeHTML(`${c}, semester ${semester}: ${target.title}`)}"><span class="target-emphasis">${escapeHTML(target.emphasis)}</span><span class="target-title">${escapeHTML(target.title)}</span>${category ? `<span class="target-action">${escapeHTML(target.action)}</span>` : ''}${compare ? `<span class="target-review">${escapeHTML(review.match)}</span><span class="target-mapped">${courses.length ? `Category recorded: ${courses.map(escapeHTML).join(', ')}` : 'No category match recorded'}</span>` : ''}</button></td>`;
+      }).join('')}</tr>`;
+    }).join('')}</tbody>`;
+    $('pathway-map').querySelectorAll('[data-target]').forEach(button => button.addEventListener('click', () => openTarget(button.dataset.target)));
+  }
+  function targetButtons(targets) {
+    return `<div class="target-relations">${targets.map(t => `<button data-target="${escapeHTML(t.id)}">${escapeHTML(`Semester ${t.semester} · ${t.category}: ${t.title}`)}</button>`).join('')}</div>`;
+  }
+  function openTarget(id) {
+    const target = targetsById[id];
+    if (!target) return;
+    const review = reviewsById[id];
+    const earlier = target.builds_on.map(previous => targetsById[previous]);
+    const later = data.progression.targets.filter(t => t.builds_on.includes(id));
+    const courses = mappedCourses(target);
+    const links = data.progression.links.filter(link => link.from === id || link.to === id);
+    const evidenceIds = [...new Set(links.flatMap(link => link.evidence_ids))];
+    const evidence = data.evidence.filter(row => evidenceIds.includes(row.id));
+    $('target-code').textContent = `${id} · Semester ${target.semester} · ${target.emphasis}`;
+    $('target-title').textContent = target.title;
+    $('target-body').innerHTML = `<p class="eyebrow">${escapeHTML(target.category)} · Proposed expectation</p>
+      <h3>What students should do</h3><p>${escapeHTML(target.action)}</p>
+      <h3>One possible task</h3><p>${escapeHTML(target.example)}</p>
+      <h3>Support that remains available</h3><p>${escapeHTML(target.support)}</p>
+      ${earlier.length ? `<h3>Builds on</h3>${targetButtons(earlier)}` : '<p>This is a proposed starting point for the category; no earlier target is specified.</p>'}
+      <h3>What later teaching could build on</h3><p>${escapeHTML(target.handover)}</p>${later.length ? targetButtons(later) : ''}
+      <h3>Evidence to request</h3><p>${escapeHTML(target.evidence_requested)}</p>
+      <details><summary>Design note</summary><p>${escapeHTML(target.note)}</p></details>
+      <section class="target-evidence"><h3>What is currently recorded?</h3><span class="status">Teacher review: ${escapeHTML(review.match)}</span>
+      ${review.match === 'Not reviewed' ? '<p>Coverage, required participation and actual support need confirmation. An unreviewed expectation is not a confirmed gap.</p>' : `<p><strong>Observed student task</strong><br>${escapeHTML(review.observed_task)}</p><p><strong>Support in practice</strong><br>${escapeHTML(review.support || 'Not recorded')}</p><p>Participation: ${escapeHTML(review.participation)} · Course(s): ${escapeHTML(review.courses || 'Not recorded')}</p><p><strong>Evidence reference</strong><br>${escapeHTML(review.evidence)}</p><p>Reviewed by ${escapeHTML(review.teacher)} · ${escapeHTML(review.date)}</p>`}
+      ${review.next_change ? `<p><strong>Proposed next change</strong><br>${escapeHTML(review.next_change)}</p>` : ''}${review.notes ? `<p>${escapeHTML(review.notes)}</p>` : ''}
+      <h3>Existing category mapping · Semester ${target.semester}</h3><p>${courses.length ? 'The category is recorded as a primary or secondary focus in the courses below. This records content; alignment with the proposed expectation still needs review.' : 'No required course has this category recorded in this semester. This does not establish that the teaching is absent.'}</p>
+      ${courses.length ? `<div class="target-relations">${courses.map(c => `<button data-mapped-course="${escapeHTML(c.code)}">${escapeHTML(c.code)} · ${c.ds_primary.includes(target.category) ? 'Primary' : 'Secondary'} · Course details</button>`).join('')}</div>` : ''}
+      ${links.length ? `<h3>Candidate handovers to discuss</h3>${links.map(link => `<details><summary>${escapeHTML(`${link.id} · ${link.from} → ${link.to}`)}</summary><p>${escapeHTML(link.change)}</p><p><strong>Confirm with teachers</strong><br>${escapeHTML(link.confirmation)}</p><p>${escapeHTML(link.notes)}</p><p>Decision: ${escapeHTML(link.decision)}${link.owner ? ` · Owner: ${escapeHTML(link.owner)}` : ''}${link.date ? ` · ${escapeHTML(link.date)}` : ''}</p></details>`).join('')}` : ''}
+      ${evidence.length ? `<h3>Sampled exercise evidence · Provisional</h3><p>These records inform the candidate handovers. They do not confirm coverage of the proposed target.</p><ul>${evidence.map(r => `<li><a href="${safeURL(r.evidence_url)}" target="_blank" rel="noopener">${escapeHTML(`${r.course} · ${r.activity}`)} ↗</a><div class="observed">${escapeHTML(r.expected_work)}</div><div class="observed"><strong>Support in the material:</strong> ${escapeHTML(r.provided_support)}</div><div class="observed">${r.participation === 'optional' ? 'Optional activity' : r.participation === 'required' ? 'Required activity' : 'Participation to confirm'} · ${escapeHTML(r.review_status)}</div></li>`).join('')}</ul>` : ''}
+      <p>Edit the Targets and Review sheets in the <a href="assets/data/Pharma_DS_Progression.xlsx" download>Excel workbook</a>, save and rebuild to update this view.</p></section>`;
+    $('target-body').querySelectorAll('[data-target]').forEach(button => button.addEventListener('click', () => { openTarget(button.dataset.target); $('target-body').scrollIntoView({block:'start'}); $('close-target').focus(); }));
+    $('target-body').querySelectorAll('[data-mapped-course]').forEach(button => button.addEventListener('click', () => {
+      const course = data.universities.sdu.courses.find(c => c.code === button.dataset.mappedCourse);
+      $('target-dialog').close(); openCourse(course);
+    }));
+    if (!$('target-dialog').open) $('target-dialog').showModal();
+    history.replaceState(null,'',`#target=${encodeURIComponent(id)}`);
+  }
+  const labels = {supplied:'Supplied implementation',completion:'Complete a guided workflow',planned:'Plan the implementation',prescribed:'Specified operations',bounded:'Make a bounded decision',open:'Justify methods and limitations',matched:'Closely matched example',prompted:'Explicit connection to earlier work',unprompted:'Recognise the connection',not_established:'Not established from this material'};
+  function renderProgression() {
+    $('pilot-content').hidden = state.university !== 'sdu'; $('pilot-unavailable').hidden = state.university === 'sdu';
+    $('capability-label').textContent = state.capability;
+    $('sequence').innerHTML = ['FA515','FA503','FA504'].map((code,i) => {
+      const course = data.universities.sdu.courses.find(c => c.code === code);
+      const rows = data.evidence.filter(r => r.course === code && r.capability === state.capability);
+      return `<section><div class="sequence-heading"><p>Semester ${i+3}</p><h3>${code}</h3><span>${escapeHTML(course.title_en)}</span></div>${rows.map(r => `<article class="activity"><h4>${escapeHTML(r.activity)}</h4><span class="status">${r.participation === 'optional' ? 'Optional activity' : r.participation === 'required' ? 'Required activity' : 'Participation to confirm'}</span><p>${escapeHTML(r.expected_work)}</p><details><summary>Support, expectations &amp; evidence</summary><p><strong>Support provided</strong><br>${escapeHTML(r.provided_support)}</p><dl><dt>Independence</dt><dd>${labels[r.independence]}</dd><dt>Judgement</dt><dd>${labels[r.judgement]}</dd><dt>Transfer</dt><dd>${labels[r.transfer]}</dd></dl><p>${escapeHTML(r.interpretation_basis)}</p><p><strong>Teacher review question</strong><br>${escapeHTML(r.review_question)}</p><p>Review status: ${escapeHTML(r.review_status)}</p><a href="${safeURL(r.evidence_url)}" target="_blank" rel="noopener">Read the exercise evidence ↗</a></details></article>`).join('')}</section>`;
+    }).join('');
+    const preparation = state.capability === 'Preparing experimental data';
+    $('connection').innerHTML = `<h3>${preparation ? 'A connection to discuss: correcting for sample removal' : 'A connection to discuss: from kinetics to stability'}</h3><p>${preparation ? 'FA503 supplies a complete sampling correction for dissolution data. FA504 explicitly recalls that work and asks students to write the correction for Caco-2 transport. This may increase implementation independence; teachers still need to confirm the help students receive and whether both tasks are required.' : 'FA515 and FA504 both use rate constants, Arrhenius fits and shelf-life calculations. FA515 already asks students to compare models; FA504 supplies the reaction order. The shared method suggests reuse, rather than a uniform increase in difficulty. The sampled FA503 Weibull fit is optional and cannot establish a required intermediate step.'}</p><a href="progression/review.md">Review these connections with the course teachers →</a>`;
+  }
+  function switchView(view) {
+    state.view = view;
+    ['overview','pathway','progression'].forEach(name => {
+      $(name).hidden = view !== name; $(`${name}-tab`).setAttribute('aria-pressed', String(view === name));
+    });
+    if (view === 'pathway') renderPathway();
+    if (view === 'progression') renderProgression();
+    history.replaceState(null,'',`#${view}`);
+  }
+  Object.entries(data.categories).forEach(([category]) => {
+    ['category','pathway-category'].forEach(id => { const option = document.createElement('option'); option.value = category; option.textContent = category; $(id).append(option); });
+  });
+  $('definitions').innerHTML = Object.entries(data.descriptions).map(([category,description]) => `<div><h3>${escapeHTML(category)}</h3><p>${escapeHTML(description[1])}</p></div>`).join('');
+  $('updated').textContent = `Updated ${data.updated}`;
+  $('university').addEventListener('change', e => {
+    state.university = e.target.value; $('programme').textContent = `Bachelor of Pharmacy · ${state.university.toUpperCase()}`;
+    $('category').value = ''; $('category').disabled = !data.universities[state.university].mapped;
+    renderOverview(); renderProgression(); renderPathway();
+  });
+  ['category','scope','subjects'].forEach(id => $(id).addEventListener('change', renderOverview));
+  $('reset').addEventListener('click', () => { $('category').value = ''; $('scope').value = 'ds'; $('subjects').checked = false; renderOverview(); });
+  $('overview-tab').addEventListener('click', () => switchView('overview'));
+  $('pathway-tab').addEventListener('click', () => switchView('pathway'));
+  $('progression-tab').addEventListener('click', () => switchView('progression'));
+  ['pathway-category','compare-targets'].forEach(id => $(id).addEventListener('change', renderPathway));
+  $('open-handover').addEventListener('click', () => openTarget('DH-05'));
+  $('proposal-sources').innerHTML = `<p class="empty">Basis and limits of the proposal</p><ul>${data.progression.sources.map(source => `<li class="empty">${safeURL(source.reference) ? `<a href="${safeURL(source.reference)}" target="_blank" rel="noopener">${escapeHTML(source.title)}</a>` : `<strong>${escapeHTML(source.title)}</strong>`} — ${escapeHTML(source.limitation)}</li>`).join('')}</ul>`;
+  document.querySelectorAll('[data-capability]').forEach(button => button.addEventListener('click', () => {
+    state.capability = button.dataset.capability;
+    document.querySelectorAll('[data-capability]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+    renderProgression();
+  }));
+  $('close-dialog').addEventListener('click', () => $('course-dialog').close());
+  $('close-target').addEventListener('click', () => $('target-dialog').close());
+  $('target-dialog').addEventListener('close', () => history.replaceState(null,'',`#${state.view}`));
+  $('target-dialog').addEventListener('click', e => { if (e.target === $('target-dialog')) { const r = e.target.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) e.target.close(); } });
+  $('course-dialog').addEventListener('click', e => { if (e.target === $('course-dialog')) { const r = e.target.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) e.target.close(); } });
+  $('print').addEventListener('click', () => window.print());
+  renderOverview(); renderProgression(); renderPathway();
+  function readLocation() {
+    const fragment = location.hash.slice(1);
+    const targetId = new URLSearchParams(fragment).get('target');
+    if (targetsById[targetId]) {
+      if (state.university !== 'sdu') { $('university').value = 'sdu'; $('university').dispatchEvent(new Event('change')); }
+      if ($('course-dialog').open) $('course-dialog').close();
+      switchView('pathway'); openTarget(targetId);
+    } else if (['overview','pathway','progression'].includes(fragment)) {
+      if ($('target-dialog').open) $('target-dialog').close();
+      switchView(fragment);
+    }
+  }
+  window.addEventListener('hashchange', readLocation);
+  readLocation();
+</script>
+</body>
+</html>

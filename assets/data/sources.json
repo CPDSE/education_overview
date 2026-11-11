@@ -1,0 +1,89 @@
+{
+  "scope": "Six sampled guides for the curriculum progression pilot",
+  "sources": {
+    "515-K": {
+      "course": "FA515",
+      "repository_url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA515-Pharmaceutical-Physical-Chemistry",
+      "retrieved_on": "2026-11-05",
+      "retrieved_ref": "main",
+      "revision": "0f26dd99d47eb22923776f88e1b27d6ae64a2cb0",
+      "revision_basis": "GitHub source archive comment; no Git commands used",
+      "path": "kinetics_assignment/guide/kinetics_R_guide.qmd",
+      "url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA515-Pharmaceutical-Physical-Chemistry/blob/0f26dd99d47eb22923776f88e1b27d6ae64a2cb0/kinetics_assignment/guide/kinetics_R_guide.qmd",
+      "sha256": "b485d88a3790cbacb8fdc70195b37ada904c44230beda7da3b95f18a8452dc6c",
+      "line_count": 421,
+      "teaching_year": null,
+      "teaching_year_status": "Awaiting teacher confirmation"
+    },
+    "515-V": {
+      "course": "FA515",
+      "repository_url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA515-Pharmaceutical-Physical-Chemistry",
+      "retrieved_on": "2026-11-05",
+      "retrieved_ref": "main",
+      "revision": "0f26dd99d47eb22923776f88e1b27d6ae64a2cb0",
+      "revision_basis": "GitHub source archive comment; no Git commands used",
+      "path": "vapour_pressure/guide/vapour_pressure_R_guide.qmd",
+      "url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA515-Pharmaceutical-Physical-Chemistry/blob/0f26dd99d47eb22923776f88e1b27d6ae64a2cb0/vapour_pressure/guide/vapour_pressure_R_guide.qmd",
+      "sha256": "b3e09b99f460587a2681a44fe0c1f09b06d071acce142a36751833d872333e61",
+      "line_count": 436,
+      "teaching_year": null,
+      "teaching_year_status": "Awaiting teacher confirmation"
+    },
+    "503-D": {
+      "course": "FA503",
+      "repository_url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA503-Drug-Formulation-and-Production-B",
+      "retrieved_on": "2026-11-05",
+      "retrieved_ref": "main",
+      "revision": "496c6261041c97a3d385f2ec6807e028b67aea6a",
+      "revision_basis": "GitHub source archive comment; no Git commands used",
+      "path": "dissolution/FA503_dissolution.qmd",
+      "url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA503-Drug-Formulation-and-Production-B/blob/496c6261041c97a3d385f2ec6807e028b67aea6a/dissolution/FA503_dissolution.qmd",
+      "sha256": "374cba851591309ab8089d9fadcb79a7de98b342ad22f44513f719a93394e961",
+      "line_count": 414,
+      "teaching_year": null,
+      "teaching_year_status": "Awaiting teacher confirmation"
+    },
+    "503-U": {
+      "course": "FA503",
+      "repository_url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA503-Drug-Formulation-and-Production-B",
+      "retrieved_on": "2026-11-05",
+      "retrieved_ref": "main",
+      "revision": "496c6261041c97a3d385f2ec6807e028b67aea6a",
+      "revision_basis": "GitHub source archive comment; no Git commands used",
+      "path": "uniformity_of_dosage_units/FA503_uniformity_of_dosage_units.qmd",
+      "url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA503-Drug-Formulation-and-Production-B/blob/496c6261041c97a3d385f2ec6807e028b67aea6a/uniformity_of_dosage_units/FA503_uniformity_of_dosage_units.qmd",
+      "sha256": "47efb558505c14eed51160a8a662f23e90dfe54bdb546c63087eafaf4ca5b504",
+      "line_count": 311,
+      "teaching_year": null,
+      "teaching_year_status": "Awaiting teacher confirmation"
+    },
+    "504-C": {
+      "course": "FA504",
+      "repository_url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA504-Drug-Formulation-and-Production-C",
+      "retrieved_on": "2026-11-05",
+      "retrieved_ref": "main",
+      "revision": "156899ec968f26aee9f110e83e3c8797e1b8d701",
+      "revision_basis": "GitHub source archive comment; no Git commands used",
+      "path": "caco2_permeability/FA504_caco2_permeabilitet.qmd",
+      "url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA504-Drug-Formulation-and-Production-C/blob/156899ec968f26aee9f110e83e3c8797e1b8d701/caco2_permeability/FA504_caco2_permeabilitet.qmd",
+      "sha256": "f43f93fc96cfc2087bf5a661b64c636de77d76771d7c3ddb206b0de76b4a3c45",
+      "line_count": 257,
+      "teaching_year": null,
+      "teaching_year_status": "Awaiting teacher confirmation"
+    },
+    "504-A": {
+      "course": "FA504",
+      "repository_url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA504-Drug-Formulation-and-Production-C",
+      "retrieved_on": "2026-11-05",
+      "retrieved_ref": "main",
+      "revision": "156899ec968f26aee9f110e83e3c8797e1b8d701",
+      "revision_basis": "GitHub source archive comment; no Git commands used",
+      "path": "lab/exercise3_asa_stability/FA504_øvelse3_databehandling.qmd",
+      "url": "https://github.com/CPDSE-EDUX/SDU-BSc-FA504-Drug-Formulation-and-Production-C/blob/156899ec968f26aee9f110e83e3c8797e1b8d701/lab/exercise3_asa_stability/FA504_%C3%B8velse3_databehandling.qmd",
+      "sha256": "a4bdf8dee7eff3871a708ce0560b0d0ce25e1726ce22a177bd3244a9fd25585c",
+      "line_count": 353,
+      "teaching_year": null,
+      "teaching_year_status": "Awaiting teacher confirmation"
+    }
+  }
+}
